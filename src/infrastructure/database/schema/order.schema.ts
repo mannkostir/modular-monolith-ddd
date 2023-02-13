@@ -7,7 +7,7 @@ export const OrderSchema = new EntitySchema<Order>({
   },
   relations: {
     orderedItems: {
-      target: 'Item',
+      target: 'OrderedItem',
       type: 'one-to-many',
     },
     customer: {
