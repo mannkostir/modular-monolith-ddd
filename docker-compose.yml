@@ -1,0 +1,29 @@
+version: '3.6'
+
+volumes:
+  postgres_data:
+  redis_data:
+    driver: local
+
+services:
+  postgres:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: modular-monolith
+      POSTGRES_USER: mannkostir
+      POSTGRES_PASSWORD: verysecretkey
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  redis:
+    image: 'redis:6.2-alpine'
+    command: redis-server --requirepass verysecretkey
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/bitnami/redis/data
+    environment:
+      - REDIS_PASSWORD=verysecretkey
+
