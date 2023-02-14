@@ -1,24 +1,59 @@
+import { ValueObject } from '@lib/base/domain/value-object';
 import { isUUID } from 'class-validator';
-import { NullableValueObject } from '../base/nullable-value-object';
 import { v4 as uuid } from 'uuid';
 
-export class UuidVO extends NullableValueObject<string> {
-  constructor(value: string | null) {
-    if (value && !isUUID(value)) {
+export abstract class UuidVO extends ValueObject<string> {
+  public abstract get value(): string | null;
+
+  public abstract get isNull(): boolean;
+
+  public abstract isEqualTo(uuid: UuidVO): boolean;
+}
+
+class NotNullUuid extends UuidVO {
+  public isNull = false as const;
+
+  constructor(value: string) {
+    if (!isUUID(value)) {
       throw new Error(`Value ${value} is not a valid UUID`);
     }
     super({ value });
   }
 
-  public get value(): string | null {
+  get value(): string {
     return this.props.value;
   }
 
-  public static generate(): UuidVO {
-    return new UuidVO(uuid());
+  isEqualTo(uuid: UuidVO): boolean {
+    return this.props.value === uuid.value;
+  }
+}
+
+class NullUuid extends UuidVO {
+  public isNull = true as const;
+
+  constructor() {
+    super({ value: null });
   }
 
-  public isEqualTo(id: UuidVO): boolean {
-    return this.props.value === id.value;
+  get value(): null {
+    return null;
+  }
+
+  isEqualTo(uuid: UuidVO): false {
+    return false;
+  }
+}
+
+export class UuidVOFactory {
+  public generate(): NotNullUuid {
+    return new NotNullUuid(uuid());
+  }
+
+  public create(value: string | null) {
+    if (!value) {
+      return new NullUuid();
+    }
+    return new NotNullUuid(value);
   }
 }

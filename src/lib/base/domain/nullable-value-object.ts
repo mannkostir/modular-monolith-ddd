@@ -1,10 +1,8 @@
-import { DomainPrimitive } from '../types/domain-primitives.type';
-import { Primitive } from '../types/primitive.type';
+import { DomainPrimitive } from '../../types/domain-primitives.type';
+import { Primitive } from '../../types/primitive.type';
 import { ValueObject } from './value-object';
 
-type ValueObjectProps<T> = T extends Primitive | Date | null
-  ? DomainPrimitive<T>
-  : T;
+type ValueObjectProps<T> = T extends Primitive | Date ? DomainPrimitive<T> : T;
 
 export class NullableValueObject<T> extends ValueObject<T> {
   constructor(props: ValueObjectProps<T> | null) {
