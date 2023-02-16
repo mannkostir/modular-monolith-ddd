@@ -29,6 +29,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         cli: {
           migrationsDir: 'src/infrastructure/database/migrations',
         },
+        synchronize: false,
       }),
       inject: [ConfigService],
     }),
