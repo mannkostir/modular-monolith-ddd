@@ -14,4 +14,6 @@ export type Order = {
   createdAt: Date;
 
   orderStatus: OrderStatus;
+
+  invoiceId: string;
 };

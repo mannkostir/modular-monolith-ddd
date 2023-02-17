@@ -5,6 +5,7 @@ import { OrderStatus } from '@src/domains/order/domain/types/order-status.type';
 export const OrderSchema = new EntitySchema<Order>({
   columns: {
     id: { type: 'uuid', nullable: false, generated: 'uuid', primary: true },
+    invoiceId: { type: 'uuid', nullable: true },
     orderStatus: {
       type: 'enum',
       nullable: false,
