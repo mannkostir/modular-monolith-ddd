@@ -8,4 +8,5 @@ export type OrderedItem = {
   itemId: string;
   item?: Item;
   quantity: number;
+  createdAt: Date;
 };

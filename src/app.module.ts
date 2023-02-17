@@ -4,6 +4,7 @@ import configuration from './config/configuration';
 import { GatewayModule } from '@src/domains/gateway/gateway.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CatalogModule } from '@src/domains/catalog/catalog.module';
+import { OrderModule } from '@src/domains/order/order.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { CatalogModule } from '@src/domains/catalog/catalog.module';
       inject: [ConfigService],
     }),
     CatalogModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [],

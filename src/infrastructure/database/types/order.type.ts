@@ -7,4 +7,6 @@ export type Order = {
   customer?: User;
 
   orderedItems?: Item[];
+
+  createdAt: Date;
 };
