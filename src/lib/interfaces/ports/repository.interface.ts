@@ -49,7 +49,9 @@ export interface FindMany<Entity, EntityProps> {
 }
 
 export interface RemoveOne<Entity> {
-  removeOne(entity: Entity): Promise<EntityMutationResult>;
+  removeOne(
+    entity: Entity,
+  ): Promise<Result<EntityMutationResult, PersistenceException>>;
 }
 
 export interface RemoveMany<Entity> {

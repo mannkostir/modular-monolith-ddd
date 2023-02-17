@@ -14,9 +14,11 @@ import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { GetManyItemsQueryHandler } from '@src/domains/catalog/queries/item/get-many-items/get-many-items.query-handler';
 import TypeormConfig from '@src/config/typeorm.config';
+import { RemoveItemFromCatalogCommandHandler } from '@src/domains/catalog/commands/item/remove-item-from-catalog/remove-item-from-catalog.command-handler';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   AddItemToCatalogCommandHandler,
+  RemoveItemFromCatalogCommandHandler,
 ];
 
 const queryHandlers: Type<QueryHandler>[] = [GetManyItemsQueryHandler];

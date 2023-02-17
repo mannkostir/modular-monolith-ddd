@@ -1,5 +1,9 @@
 import { DomainRulesChecker } from '@lib/base/domain/domain.rules-checker';
-import { UuidVO, UuidVOFactory } from '@lib/value-objects/uuid.value-object';
+import {
+  NotNullUuid,
+  UuidVO,
+  UuidVOFactory,
+} from '@lib/value-objects/uuid.value-object';
 import { DateVO, DateVOFactory } from '@lib/value-objects/date.value-object';
 
 export interface BaseEntityProps {
@@ -17,12 +21,12 @@ export interface CreateEntityProps<T> extends Partial<BaseEntityProps> {
 
 export abstract class Entity<Props extends object> {
   protected readonly rulesChecker: DomainRulesChecker;
-  protected readonly _id: UuidVO;
+  protected readonly _id: NotNullUuid;
   protected readonly props: Props;
   private readonly _createdAt: DateVO;
 
   constructor({ id, props, createdAt, updatedAt }: CreateEntityProps<Props>) {
-    this._id = id || new UuidVOFactory().generate();
+    this._id = !id || id.isNull ? new UuidVOFactory().generate() : id;
 
     const now = new DateVOFactory().now;
 
@@ -39,7 +43,7 @@ export abstract class Entity<Props extends object> {
     return this._updatedAt;
   }
 
-  public get id(): UuidVO {
+  public get id(): NotNullUuid {
     return this._id;
   }
 

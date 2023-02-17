@@ -10,7 +10,7 @@ abstract class UuidVOBase extends ValueObject<string> {
   public abstract isEqualTo(uuid: UuidVO): boolean;
 }
 
-class NotNullUuid extends UuidVOBase {
+export class NotNullUuid extends UuidVOBase {
   public isNull = false as const;
 
   constructor(value: string) {
@@ -29,7 +29,7 @@ class NotNullUuid extends UuidVOBase {
   }
 }
 
-class NullUuid extends UuidVOBase {
+export class NullUuid extends UuidVOBase {
   public isNull = true as const;
 
   constructor() {

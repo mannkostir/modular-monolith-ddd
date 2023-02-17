@@ -37,7 +37,7 @@ export type WriteQueryParams<EntityProps = Record<string, any>> = {
 
 export abstract class TypeormRepository<
   DomainEntity extends AggregateRoot,
-  DomainEntityProps extends Record<string, unknown>,
+  DomainEntityProps extends Record<string, any>,
   OrmEntity extends { id: string; createdAt: Date; [key: string]: unknown },
   Params extends WriteQueryParams = WriteQueryParams,
 > implements IRepository<DomainEntity, DomainEntityProps>
@@ -153,11 +153,29 @@ export abstract class TypeormRepository<
       );
   }
 
-  async removeOne(entity: DomainEntity): Promise<DomainEntity> {
+  async removeOne(
+    entity: DomainEntity,
+  ): Promise<Result<EntityMutationResult, PersistenceException>> {
     this.unitOfWork.addAggregates(this.correlationId, [entity]);
-    const ormEntity = await this.mapper.toOrmEntity(entity);
-    const result = await this.repository.remove(ormEntity);
-    return this.mapper.toDomainEntity(result);
+
+    const ormEntityMappingResult: Result<
+      OrmEntity,
+      MappingPersistenceException
+    > = await this.mapper
+      .toOrmEntity(entity)
+      .then((entity) => Result.ok(entity))
+      .catch((err) => Result.fail(new MappingPersistenceException(err)));
+
+    if (ormEntityMappingResult.isErr) return ormEntityMappingResult;
+
+    const ormEntity = ormEntityMappingResult.unwrap();
+
+    return this.repository
+      .save(ormEntity)
+      .then((entity) =>
+        Result.ok({ id: new UuidVOFactory().create(entity.id) }),
+      )
+      .catch((err) => Result.fail(new SavingPersistenceException(err)));
   }
 
   async removeMany(entities: DomainEntity[]): Promise<DomainEntity[]> {
