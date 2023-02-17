@@ -7,7 +7,7 @@ import {
   MoreThan,
   Repository,
 } from 'typeorm';
-import { UuidVO, UuidVOFactory } from '@lib/value-objects/uuid.value-object';
+import { UuidVO } from '@lib/value-objects/uuid.value-object';
 import { DateVO } from '@lib/value-objects/date.value-object';
 import { AggregateRoot } from '@lib/base/domain/aggregate-root';
 import {
@@ -62,8 +62,6 @@ export abstract class TypeormRepository<
   }
 
   async findOneById(id: UuidVO): Promise<DomainEntity | null> {
-    if (id.isNull) return null;
-
     const ormEntity = await this.repository.findOne({
       where: {
         id: id.value,
@@ -114,9 +112,7 @@ export abstract class TypeormRepository<
 
     return this.repository
       .save(ormEntity)
-      .then((entity) =>
-        Result.ok({ id: new UuidVOFactory().create(entity.id) }),
-      )
+      .then((entity) => Result.ok({ id: new UuidVO(entity.id) }))
       .catch((err) => Result.fail(new SavingPersistenceException(err)));
   }
 
@@ -147,9 +143,7 @@ export abstract class TypeormRepository<
     return this.repository
       .save(successfulResults.map((result) => result.unwrap()))
       .then((entities) =>
-        entities.map((entity) =>
-          Result.ok({ id: new UuidVOFactory().create(entity.id) }),
-        ),
+        entities.map((entity) => Result.ok({ id: new UuidVO(entity.id) })),
       );
   }
 
@@ -172,9 +166,7 @@ export abstract class TypeormRepository<
 
     return this.repository
       .save(ormEntity)
-      .then((entity) =>
-        Result.ok({ id: new UuidVOFactory().create(entity.id) }),
-      )
+      .then((entity) => Result.ok({ id: new UuidVO(entity.id) }))
       .catch((err) => Result.fail(new SavingPersistenceException(err)));
   }
 

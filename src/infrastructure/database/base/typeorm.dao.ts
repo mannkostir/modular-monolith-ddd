@@ -3,8 +3,8 @@ import { DataSource, SelectQueryBuilder } from 'typeorm';
 import { PaginationQuery } from '@lib/interfaces/common/pagination-query.interface';
 import { PaginatedResponse } from '@lib/base/common/paginated.response';
 import { QueryByIdSpecification } from '@src/infrastructure/database/specifications/query-by-id.specification';
-import { UuidVOFactory } from '@lib/value-objects/uuid.value-object';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
+import { UuidVO } from '@lib/value-objects/uuid.value-object';
 
 export type DaoParams = {
   id?: string;
@@ -56,7 +56,7 @@ export abstract class TypeormDao<
   private getBaseQb(params: Params): ExtendedQueryBuilder<any> {
     return this.prepareQb(this.queryBuilder, params).addSpecification(
       new QueryByIdSpecification({
-        id: new UuidVOFactory().create(params.id),
+        id: params.id ? new UuidVO(params.id) : undefined,
       }),
     );
   }

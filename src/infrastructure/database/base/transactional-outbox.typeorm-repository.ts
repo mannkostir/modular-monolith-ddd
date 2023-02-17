@@ -3,7 +3,7 @@ import { ITransactionalOutboxRepository } from '@lib/interfaces/ports/transactio
 import { OutboxMessage } from '@src/infrastructure/database/types/outbox-message.type';
 import { IMessage } from '@lib/types/message.type';
 import { OutboxMessageStatus } from '@src/infrastructure/database/types/outbox-message-status.type';
-import { UuidVOFactory } from '@lib/value-objects/uuid.value-object';
+import { UuidVO } from '@lib/value-objects/uuid.value-object';
 
 export abstract class TransactionalOutboxTypeormRepository
   implements ITransactionalOutboxRepository
@@ -34,10 +34,9 @@ export abstract class TransactionalOutboxTypeormRepository
   private toOutboxMessage(message: IMessage): OutboxMessage {
     return {
       status: OutboxMessageStatus.pending,
-      correlationId:
-        message.correlationId || new UuidVOFactory().generate().value,
+      correlationId: message.correlationId || UuidVO.generate().value,
       context: message.context,
-      id: new UuidVOFactory().generate().value,
+      id: UuidVO.generate().value,
       token: message.token,
       dateOccurred: message.dateOccurred,
       payload: message.payload,

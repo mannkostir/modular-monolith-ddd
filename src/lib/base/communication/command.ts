@@ -1,6 +1,6 @@
-import { UuidVOFactory } from '@lib/value-objects/uuid.value-object';
 import { PartialBy } from '@lib/types/partial-by.type';
 import { ICommand } from '@nestjs/cqrs';
+import { UuidVO } from '@lib/value-objects/uuid.value-object';
 
 export type CommandProps<Payload extends Record<string, any>> = PartialBy<
   Command<Payload>,
@@ -16,7 +16,6 @@ export abstract class Command<
 
   constructor(props: CommandProps<Payload>) {
     this.payload = props.payload;
-    this.correlationId =
-      props.correlationId || new UuidVOFactory().generate().value;
+    this.correlationId = props.correlationId || UuidVO.generate().value;
   }
 }

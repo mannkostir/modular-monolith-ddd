@@ -1,12 +1,14 @@
 import { User } from './user.type';
-import { Item } from './item.type';
+import { OrderedItem } from '@src/infrastructure/database/types/ordered-item.type';
 
 export type Order = {
   id: string;
 
   customer?: User;
 
-  orderedItems?: Item[];
+  customerId: string;
+
+  orderedItems: OrderedItem[];
 
   createdAt: Date;
 };

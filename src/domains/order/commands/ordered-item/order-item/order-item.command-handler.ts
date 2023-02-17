@@ -4,25 +4,26 @@ import { CommandHandler } from '@lib/base/communication/command-handler';
 import { OrderItemCommand } from './order-item.command';
 import { Result } from '@lib/utils/result.util';
 import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
-import { OrderedItemEntity } from '@src/domains/order/domain/ordered-item.entity';
-import { UuidVOFactory } from '@lib/value-objects/uuid.value-object';
+import { UuidVO } from '@lib/value-objects/uuid.value-object';
+import { Exception } from '@lib/base/common/exception';
+import { EntityNotFoundDomainError } from '@src/infrastructure/database/errors/entity-not-found.persistence.exception';
 
 @CqrsCommandHandler(OrderItemCommand)
 export class OrderItemCommandHandler extends CommandHandler<UnitOfWork> {
-  async handle(
-    command: OrderItemCommand,
-  ): Promise<Result<void, InvalidOperationDomainError>> {
-    const orderedItemRepository = this.unitOfWork.getOrderedItemRepository(
+  async handle(command: OrderItemCommand): Promise<Result<void, Exception>> {
+    const orderRepository = this.unitOfWork.getOrderRepository(
       command.correlationId,
     );
 
-    const orderedItem = OrderedItemEntity.create({
-      orderId: new UuidVOFactory().create(command.payload.orderId),
-      itemId: new UuidVOFactory().create(command.payload.itemId),
-      quantity: command.payload.quantity,
-    });
+    const order = await orderRepository.findOneById(
+      new UuidVO(command.payload.orderId),
+    );
+    if (!order)
+      return Result.fail(new EntityNotFoundDomainError('Заказ не найден'));
 
-    const saveResult = await orderedItemRepository.save(orderedItem);
+    order.addItem(new UuidVO(command.payload.itemId), command.payload.quantity);
+
+    const saveResult = await orderRepository.save(order);
     if (saveResult.isErr) return Result.fail(new InvalidOperationDomainError());
 
     return Result.ok();

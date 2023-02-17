@@ -1,9 +1,9 @@
 import { TypeormUnitOfWork } from '@src/infrastructure/database/base/typeorm.unit-of-work';
 import { ISaveSaga } from '@lib/interfaces/common/save-saga.interface';
 import { ITransactionalOutboxRepository } from '@lib/interfaces/ports/transactional-outbox.repository.interface';
-import { OrderedItemRepository } from '@src/domains/order/persistence/ordered-item/ordered-item.repository';
-import { OrderedItemSchema } from '@src/infrastructure/database/schema/ordered-item.schema';
 import { IRetrieveSaga } from '@lib/interfaces/common/retrieve-saga.interface';
+import { OrderRepository } from '@src/domains/order/persistence/order/order.repository';
+import { OrderSchema } from '@src/infrastructure/database/schema/order.schema';
 
 export class UnitOfWork extends TypeormUnitOfWork {
   getSagaRepository(correlationId: string): ISaveSaga & IRetrieveSaga {
@@ -16,11 +16,9 @@ export class UnitOfWork extends TypeormUnitOfWork {
     throw new Error('Not implemented');
   }
 
-  public getOrderedItemRepository(
-    correlationId: string,
-  ): OrderedItemRepository {
-    return new OrderedItemRepository(
-      this.getOrmRepository(OrderedItemSchema),
+  public getOrderRepository(correlationId: string): OrderRepository {
+    return new OrderRepository(
+      this.getOrmRepository(OrderSchema),
       this,
       correlationId,
     );

@@ -3,8 +3,8 @@ import { Bus } from '@lib/base/common/bus';
 import { IEvent } from '@lib/base/common/event';
 import { Result } from '@lib/utils/result.util';
 import { Exception } from '@lib/base/common/exception';
-import { UuidVOFactory } from '@lib/value-objects/uuid.value-object';
 import { IPublishEvents } from '@lib/interfaces/common/publish-events.interface';
+import { UuidVO } from '@lib/value-objects/uuid.value-object';
 
 export abstract class EventsPublisher<
   TEvent extends IEvent,
@@ -27,8 +27,7 @@ export abstract class EventsPublisher<
   ): Promise<Result<any, Exception>> {
     return this.bus.publishBulk(
       events.map((event) => {
-        event.correlationId =
-          correlationId || new UuidVOFactory().generate().value;
+        event.correlationId = correlationId || UuidVO.generate().value;
         return event;
       }),
     );

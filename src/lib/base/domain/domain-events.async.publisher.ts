@@ -1,8 +1,8 @@
 import { DomainEvent } from '@lib/base/domain/domain-event';
 import { AsyncBus } from '@lib/base/common/async-bus';
 import { IHandleEventsAsync } from '@lib/interfaces/common/handle-events-async.interface';
-import { UuidVOFactory } from '@lib/value-objects/uuid.value-object';
 import { IPublishEvents } from '@lib/interfaces/common/publish-events.interface';
+import { UuidVO } from '@lib/value-objects/uuid.value-object';
 
 export class DomainEventsAsyncPublisher
   implements IPublishEvents<DomainEvent, IHandleEventsAsync<DomainEvent>>
@@ -19,8 +19,7 @@ export class DomainEventsAsyncPublisher
   publishBulk(events: DomainEvent[], correlationId: string): void {
     return this.bus.publishBulk(
       events.map((event) => {
-        event.correlationId =
-          correlationId || new UuidVOFactory().generate().value;
+        event.correlationId = correlationId || UuidVO.generate().value;
         return event;
       }),
     );

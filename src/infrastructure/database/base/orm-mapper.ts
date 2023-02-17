@@ -1,5 +1,5 @@
 import { EntityManager } from 'typeorm';
-import { UuidVO, UuidVOFactory } from '@lib/value-objects/uuid.value-object';
+import { UuidVO } from '@lib/value-objects/uuid.value-object';
 import { Entity } from '@lib/base/domain/entity';
 import { IOrmMapper } from '@lib/interfaces/ports/orm-mapper.interface';
 import { TypeormEntity } from '@src/infrastructure/database/types/typeorm-entity.type';
@@ -29,7 +29,7 @@ export abstract class OrmMapper<
 
     const constructor = this.getEntityConstructor(ormEntity);
     return new constructor({
-      id: new UuidVOFactory().create(this.getEntityId(ormEntity, props)),
+      id: new UuidVO(this.getEntityId(ormEntity, props)),
       props,
       createdAt: new DateVOFactory().create(entity.createdAt),
       updatedAt: new DateVOFactory().create(entity.updatedAt),

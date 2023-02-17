@@ -6,13 +6,13 @@ import { ProviderTokens } from '@lib/types/provider-tokens.type';
 import { ITransactionalOutboxRepository } from '@lib/interfaces/ports/transactional-outbox.repository.interface';
 import { ISaveSaga } from '@lib/interfaces/common/save-saga.interface';
 import { IMessage } from '@lib/types/message.type';
-import { UuidVOFactory } from '@lib/value-objects/uuid.value-object';
 import { Result } from '@lib/utils/result.util';
 import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
 import { Command } from '@lib/base/communication/command';
 import { Query } from '@lib/base/communication/query';
 import { MessageBus } from '@src/domains/integration/base/message.bus';
 import { IRetrieveSaga } from '@lib/interfaces/common/retrieve-saga.interface';
+import { UuidVO } from '@lib/value-objects/uuid.value-object';
 
 export type SagaState = {
   isCompleted: boolean;
@@ -45,7 +45,7 @@ export abstract class Saga<Data extends SagaState = SagaState>
   }
 
   public async handle(message: IMessage) {
-    const correlationId = new UuidVOFactory().generate().value;
+    const correlationId = UuidVO.generate().value;
 
     await this.unitOfWork.execute(correlationId, async () => {
       let sagaState: Data | undefined;

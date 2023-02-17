@@ -1,6 +1,6 @@
 import { PartialBy } from '@lib/types/partial-by.type';
 import { DateVOFactory } from '@lib/value-objects/date.value-object';
-import { UuidVOFactory } from '@lib/value-objects/uuid.value-object';
+import { UuidVO } from '@lib/value-objects/uuid.value-object';
 
 export interface IEvent<
   Payload extends Record<string, unknown> = Record<string, unknown>,
@@ -30,8 +30,7 @@ export abstract class Event<Payload extends Record<string, any> = any>
     this.aggregateId = props.aggregateId;
     this.payload = props.payload;
     Object.assign(this.payload, props.payload);
-    this.correlationId =
-      props.correlationId || new UuidVOFactory().generate().value;
+    this.correlationId = props.correlationId || UuidVO.generate().value;
     this.dateOccurred = new DateVOFactory().now.date;
   }
 }

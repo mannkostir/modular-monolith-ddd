@@ -4,7 +4,7 @@ import {
   OrderedItemProps,
 } from '@src/domains/order/domain/ordered-item.entity';
 import { OrderedItem } from '@src/infrastructure/database/types/ordered-item.type';
-import { UuidVOFactory } from '@lib/value-objects/uuid.value-object';
+import { UuidVO } from '@lib/value-objects/uuid.value-object';
 import { OrmEntityProps } from '@src/infrastructure/database/types/orm-entity-props.type';
 
 export class OrderedItemOrmMapper extends OrmMapper<
@@ -12,9 +12,9 @@ export class OrderedItemOrmMapper extends OrmMapper<
   OrderedItemProps,
   OrderedItem
 > {
-  protected getEntityConstructor(ormEntity: OrderedItem): {
-    new (props: any): OrderedItemEntity;
-  } {
+  protected getEntityConstructor(
+    ormEntity: OrderedItem,
+  ): new (props: any) => OrderedItemEntity {
     return OrderedItemEntity;
   }
 
@@ -22,8 +22,8 @@ export class OrderedItemOrmMapper extends OrmMapper<
     ormEntity: OrderedItem,
   ): Promise<OrderedItemProps> {
     return {
-      itemId: new UuidVOFactory().create(ormEntity.itemId),
-      orderId: new UuidVOFactory().create(ormEntity.orderId),
+      itemId: new UuidVO(ormEntity.itemId),
+      orderId: new UuidVO(ormEntity.orderId),
       quantity: ormEntity.quantity,
     };
   }
@@ -34,8 +34,8 @@ export class OrderedItemOrmMapper extends OrmMapper<
     const props = entity.getCopiedProps();
 
     return {
-      itemId: props.itemId.value || undefined,
-      orderId: props.orderId.value || undefined,
+      itemId: props.itemId.value,
+      orderId: props.orderId.value,
       quantity: props.quantity,
     };
   }

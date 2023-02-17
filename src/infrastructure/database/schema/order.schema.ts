@@ -9,6 +9,7 @@ export const OrderSchema = new EntitySchema<Order>({
     orderedItems: {
       target: 'OrderedItem',
       type: 'one-to-many',
+      eager: true,
     },
     customer: {
       target: 'User',
