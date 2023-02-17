@@ -19,11 +19,13 @@ import { OrderOutboxMessageSchema } from '@src/infrastructure/database/schema/or
 import RedisConfig from '@src/config/redis.config';
 import { ConfirmOrderCommandHandler } from '@src/domains/order/commands/order/confirm-order/confirm-order.command-handler';
 import { CreateOrderCommandHandler } from '@src/domains/order/commands/order/create-order/create-order.command-handler';
+import { CancelOrderCommandHandler } from '@src/domains/order/commands/order/cancel-order/cancel-order.command-handler';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   OrderItemCommandHandler,
   ConfirmOrderCommandHandler,
   CreateOrderCommandHandler,
+  CancelOrderCommandHandler,
 ];
 
 const queryHandlers: Type<QueryHandler>[] = [];

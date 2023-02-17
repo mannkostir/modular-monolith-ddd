@@ -15,6 +15,18 @@ export type OrderProps = {
 export type CreateOrderProps = Pick<OrderProps, 'customerId'>;
 
 export class OrderEntity extends AggregateRoot<OrderProps> {
+  protected get isPending(): boolean {
+    return this.props.orderStatus === OrderStatus.pending;
+  }
+
+  protected get isCancelled(): boolean {
+    return this.props.orderStatus === OrderStatus.cancelled;
+  }
+
+  protected get isPlaced(): boolean {
+    return this.props.orderStatus === OrderStatus.placed;
+  }
+
   public static create(createProps: CreateOrderProps): OrderEntity {
     return new OrderEntity({
       props: {
@@ -29,7 +41,7 @@ export class OrderEntity extends AggregateRoot<OrderProps> {
     itemId: UuidVO,
     quantity: number,
   ): Result<void, InvalidOperationDomainError> {
-    if (this.props.orderStatus !== OrderStatus.pending)
+    if (!this.isPending)
       return Result.fail(
         new InvalidOperationDomainError(
           'Нельзя добавить товар в заказ, который не находится в стадии ожидания',
@@ -61,7 +73,7 @@ export class OrderEntity extends AggregateRoot<OrderProps> {
   }
 
   confirm(): Result<void, InvalidOperationDomainError> {
-    if (this.props.orderStatus !== OrderStatus.pending)
+    if (!this.isPending)
       return Result.fail(
         new InvalidOperationDomainError(
           'Нельзя подтвердить заказ, который уже не находится в стадии ожидания',
@@ -82,6 +94,17 @@ export class OrderEntity extends AggregateRoot<OrderProps> {
         payload: { orderId: this.id.value },
       }),
     );
+
+    return Result.ok();
+  }
+
+  cancel(): Result<void, InvalidOperationDomainError> {
+    if (this.isCancelled)
+      return Result.fail(
+        new InvalidOperationDomainError('Нельзя отменить уже отменённый заказ'),
+      );
+
+    this.props.orderStatus = OrderStatus.cancelled;
 
     return Result.ok();
   }

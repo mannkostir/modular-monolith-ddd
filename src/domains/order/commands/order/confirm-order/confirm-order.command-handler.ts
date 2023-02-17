@@ -6,7 +6,7 @@ import { Result } from '@lib/utils/result.util';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
 import { EntityNotFoundDomainError } from '@src/infrastructure/database/errors/entity-not-found.persistence.exception';
 import { Exception } from '@lib/base/common/exception';
-import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
+import { OrderSaveFailedDomainException } from '@src/domains/order/domain/errors/order-save-failed.domain-exception';
 
 @CqrsCommandHandler(ConfirmOrderCommand)
 export class ConfirmOrderCommandHandler extends CommandHandler<UnitOfWork> {
@@ -25,9 +25,7 @@ export class ConfirmOrderCommandHandler extends CommandHandler<UnitOfWork> {
 
     const saveResult = await orderRepository.save(order);
     if (saveResult.isErr)
-      return Result.fail(
-        new InvalidOperationDomainError('Не удалось подтвердить заказ'),
-      );
+      return Result.fail(new OrderSaveFailedDomainException());
 
     return Result.ok();
   }
