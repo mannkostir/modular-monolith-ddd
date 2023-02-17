@@ -1,5 +1,5 @@
-import { ISagaState } from '@lib/base/communication/saga';
+import { SagaState } from '@src/domains/integration/base/saga';
 
-export interface IRetrieveSaga<State extends ISagaState = ISagaState> {
-  getSaga(correlationId: string): Promise<State>;
+export interface IRetrieveSaga<State extends SagaState = SagaState> {
+  getSaga(correlationId: string): Promise<State | undefined>;
 }

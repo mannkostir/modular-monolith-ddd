@@ -1,7 +1,6 @@
 import { IUnitOfWork } from '@lib/interfaces/ports/unit-of-work.interface';
 import { ITransactionalOutboxRepository } from '@lib/interfaces/ports/transactional-outbox.repository.interface';
 import { ISaveSaga } from '@lib/interfaces/common/save-saga.interface';
-import { IRetrieveSaga } from '@lib/interfaces/common/retrieve-saga.interface';
 import {
   DataSource,
   EntityManager,
@@ -20,6 +19,7 @@ import { IsolationLevel } from 'typeorm/driver/types/IsolationLevel';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
 import { Inject } from '@nestjs/common';
 import { ProviderTokens } from '@lib/types/provider-tokens.type';
+import { IRetrieveSaga } from '@lib/interfaces/common/retrieve-saga.interface';
 
 export abstract class TypeormUnitOfWork implements IUnitOfWork {
   aggregates: Map<string, AggregateRoot[]> = new Map();

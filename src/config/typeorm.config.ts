@@ -18,6 +18,7 @@ export default new DataSource({
     'dist/infrastructure/database/**/*.schema.js',
     'dist/infrastructure/database/**/*.materialized-view.js',
     'dist/infrastructure/database/**/*.view.js',
+    'dist/infrastructure/database/**/*.view.js',
   ],
   synchronize: false,
 });

@@ -6,7 +6,7 @@ export const UserSchema = new EntitySchema<User>({
     id: {
       type: 'uuid',
       nullable: false,
-      generated: true,
+      generated: 'uuid',
       primary: true,
     },
     password: {

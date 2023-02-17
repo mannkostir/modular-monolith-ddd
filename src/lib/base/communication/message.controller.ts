@@ -2,9 +2,8 @@ import { Controller } from '@src/domains/gateway/base/controller';
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';
-import { MessageBus } from '@lib/base/communication/message.bus';
-import { MessageTokens } from '@lib/types/message-tokens.type';
 import { IMessage } from '@lib/types/message.type';
+import { MessageBus } from '@src/domains/integration/base/message.bus';
 
 @Injectable()
 export abstract class MessageController extends Controller {
@@ -17,7 +16,7 @@ export abstract class MessageController extends Controller {
     MessageBus.getInstance().register(this.getMessagePattern(), this);
   }
 
-  public abstract getMessagePattern(): MessageTokens;
+  public abstract getMessagePattern(): string;
 
   abstract handle(message: IMessage): Promise<void>;
 }

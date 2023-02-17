@@ -1,5 +1,4 @@
 import { IMessage } from '@lib/types/message.type';
-import { MessageTokens } from '@lib/types/message-tokens.type';
 
 export type MessageMeta = {
   dateOccurred: Date;
@@ -14,12 +13,12 @@ export abstract class Message<
   correlationId: string;
   dateOccurred: Date;
   payload: Payload;
-  token: MessageTokens;
+  token: string;
 
   constructor(
     meta: MessageMeta,
     payload: Payload,
-    token: MessageTokens,
+    token: string,
     context: string,
   ) {
     this.context = context;

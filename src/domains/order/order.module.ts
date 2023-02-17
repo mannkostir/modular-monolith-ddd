@@ -14,6 +14,9 @@ import TypeormConfig from '@src/config/typeorm.config';
 import { ConfigService } from '@nestjs/config';
 import { OrderItemCommandHandler } from '@src/domains/order/commands/ordered-item/order-item/order-item.command-handler';
 import { UnitOfWork } from '@src/domains/order/persistence/unit-of-work';
+import { IntegrationModule } from '@src/domains/integration/integration.module';
+import { OrderOutboxMessageSchema } from '@src/infrastructure/database/schema/order.outbox-message.schema';
+import RedisConfig from '@src/config/redis.config';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   OrderItemCommandHandler,
@@ -64,7 +67,15 @@ const DataSourceProvider: Provider<DataSource> = {
 };
 
 @Module({
-  imports: [TypeOrmModule.forFeature([OrderedItemSchema, OrderSchema])],
+  imports: [
+    TypeOrmModule.forFeature([OrderedItemSchema, OrderSchema]),
+    IntegrationModule.init({
+      moduleToken: 'order',
+      entityTargetOrSchema: OrderOutboxMessageSchema,
+      redisConnection: RedisConfig,
+      typeormDataSource: TypeormConfig,
+    }),
+  ],
   providers: [
     ...commandHandlers,
     ...queryHandlers,

@@ -1,27 +1,26 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { IUnitOfWork } from '@lib/interfaces/ports/unit-of-work.interface';
-import { MessageTokens } from '@lib/types/message-tokens.type';
 import { IHandleMessage } from '@lib/interfaces/common/handle-message.interface';
 import { ProviderTokens } from '@lib/types/provider-tokens.type';
-import { MessageBus } from '@lib/base/communication/message.bus';
 import { ITransactionalOutboxRepository } from '@lib/interfaces/ports/transactional-outbox.repository.interface';
 import { ISaveSaga } from '@lib/interfaces/common/save-saga.interface';
-import { IRetrieveSaga } from '@lib/interfaces/common/retrieve-saga.interface';
 import { IMessage } from '@lib/types/message.type';
 import { UuidVOFactory } from '@lib/value-objects/uuid.value-object';
 import { Result } from '@lib/utils/result.util';
 import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
 import { Command } from '@lib/base/communication/command';
 import { Query } from '@lib/base/communication/query';
+import { MessageBus } from '@src/domains/integration/base/message.bus';
+import { IRetrieveSaga } from '@lib/interfaces/common/retrieve-saga.interface';
 
-export interface ISagaState {
+export type SagaState = {
   isCompleted: boolean;
-  startWithMessage: MessageTokens;
-}
+  startWithMessage: string;
+};
 
 @Injectable()
-export abstract class Saga<Data extends ISagaState = ISagaState>
+export abstract class Saga<Data extends SagaState = SagaState>
   implements IHandleMessage
 {
   private correlationToStateMap: Map<string, Data> = new Map();
@@ -86,7 +85,7 @@ export abstract class Saga<Data extends ISagaState = ISagaState>
 
   protected abstract getDefaultState(): Data;
 
-  protected abstract listenToMessages(): MessageTokens[];
+  protected abstract listenToMessages(): string[];
 
   protected async sendMessage(message: IMessage): Promise<void> {
     await this.getOutboxRepository().add([message]);

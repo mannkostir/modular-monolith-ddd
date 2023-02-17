@@ -3,7 +3,7 @@ import { OrderedItem } from '../types/ordered-item.type';
 
 export const OrderedItemSchema = new EntitySchema<OrderedItem>({
   columns: {
-    id: { type: 'uuid', nullable: false, generated: true, primary: true },
+    id: { type: 'uuid', nullable: false, generated: 'uuid', primary: true },
     quantity: { type: 'int', nullable: false, default: 1 },
   },
   relations: {

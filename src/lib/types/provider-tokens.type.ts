@@ -6,4 +6,5 @@ export enum ProviderTokens {
   domainEventsAsyncBus = 'domain_events_async_bus',
   logger = 'logger',
   dataSource = 'data_source',
+  redisConnection = 'redis_connection',
 }

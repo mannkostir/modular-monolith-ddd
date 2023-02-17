@@ -19,12 +19,13 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migration:generate": "f() { npx typeorm-ts-node-esm -p -d ./src/config/typeorm.config.ts migration:generate \"./src/infrastructure/database/migrations/$@\"; }; f",
-    "migration:run": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:run",
+    "migration:run": "ts-node --transpile-only ./node_modules/typeorm/cli.js -d ./src/config/typeorm.config.ts migration:run",
     "migration:revert": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:revert",
     "migration:create": "ts-node --transpile-only ./node_modules/typeorm/cli.js migration:create",
     "generate:command": "hygen use-case/command new",
     "generate:query": "hygen use-case/query new",
-    "generate:persistence-unit": "hygen persistence/unit new"
+    "generate:persistence-unit": "hygen persistence/unit new",
+    "schema:drop": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./src/config/typeorm.config.ts schema:drop"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -36,10 +37,12 @@
     "@nestjs/swagger": "^6.2.1",
     "@nestjs/typeorm": "^9.0.1",
     "@types/passport-local": "^1.0.35",
+    "bullmq": "^3.7.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "dotenv": "^16.0.3",
     "hygen": "^6.2.11",
+    "ioredis": "^5.3.1",
     "joi": "^17.7.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",

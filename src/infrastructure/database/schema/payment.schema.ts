@@ -3,7 +3,7 @@ import { Payment, PaymentStatus } from '../types/payment.type';
 
 export const PaymentSchema = new EntitySchema<Payment>({
   columns: {
-    id: { type: 'uuid', nullable: false, generated: true, primary: true },
+    id: { type: 'uuid', nullable: false, generated: 'uuid', primary: true },
     status: {
       enum: PaymentStatus,
       nullable: false,

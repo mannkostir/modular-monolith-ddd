@@ -1,9 +1,7 @@
-import { MessageTokens } from '@lib/types/message-tokens.type';
-
 export interface IMessage<
-  Payload extends Record<string, unknown> = Record<string, unknown>,
+  Payload extends Record<string, any> = Record<string, any>,
 > {
-  token: MessageTokens;
+  token: string;
   payload: Payload;
   correlationId: string;
   dateOccurred: Date;
