@@ -15,6 +15,9 @@ import { ConfigService } from '@nestjs/config';
 import { GetManyItemsQueryHandler } from '@src/domains/catalog/queries/item/get-many-items/get-many-items.query-handler';
 import TypeormConfig from '@src/config/typeorm.config';
 import { RemoveItemFromCatalogCommandHandler } from '@src/domains/catalog/commands/item/remove-item-from-catalog/remove-item-from-catalog.command-handler';
+import { IntegrationModule } from '@src/domains/integration/integration.module';
+import RedisConfig from '@src/config/redis.config';
+import { CatalogOutboxMessageSchema } from '@src/infrastructure/database/schema/catalog.outbox-message.schema';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   AddItemToCatalogCommandHandler,
@@ -66,7 +69,15 @@ const DataSourceProvider: Provider<DataSource> = {
 };
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ItemSchema])],
+  imports: [
+    TypeOrmModule.forFeature([ItemSchema]),
+    IntegrationModule.init({
+      moduleToken: 'catalog',
+      entityTargetOrSchema: CatalogOutboxMessageSchema,
+      redisConnection: RedisConfig,
+      typeormDataSource: TypeormConfig,
+    }),
+  ],
   providers: [
     ...commandHandlers,
     ...queryHandlers,
