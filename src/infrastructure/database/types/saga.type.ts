@@ -1,8 +1,9 @@
 import { SagaState } from '@src/domains/integration/base/saga';
 
-export type PersistedSaga<State extends SagaState = SagaState> = {
+export type Saga = {
+  id: string;
+  state: SagaState;
   correlationId: string;
-  state: State;
   type: string;
   isCompleted: boolean;
 };

@@ -4,6 +4,9 @@ import { ITransactionalOutboxRepository } from '@lib/interfaces/ports/transactio
 import { ItemRepository } from '@src/domains/catalog/persistence/item/item.repository';
 import { ItemSchema } from '@src/infrastructure/database/schema/item.schema';
 import { IRetrieveSaga } from '@lib/interfaces/common/retrieve-saga.interface';
+import { OrderOutboxMessageRepository } from '@src/domains/order/persistence/outbox/order.outbox-message.repository';
+import { OutboxMessage } from '@src/infrastructure/database/types/outbox-message.type';
+import { OrderOutboxMessageSchema } from '@src/infrastructure/database/schema/order.outbox-message.schema';
 
 export class UnitOfWork extends TypeormUnitOfWork {
   getSagaRepository(correlationId: string): ISaveSaga & IRetrieveSaga {
@@ -13,7 +16,12 @@ export class UnitOfWork extends TypeormUnitOfWork {
   getTransactionalOutboxRepository(
     correlationId?: string,
   ): ITransactionalOutboxRepository {
-    throw new Error('Not implemented');
+    return new OrderOutboxMessageRepository(
+      this.getOrmRepository<OutboxMessage>(
+        OrderOutboxMessageSchema,
+        correlationId,
+      ),
+    );
   }
 
   getItemsRepository(correlationId: string): ItemRepository {

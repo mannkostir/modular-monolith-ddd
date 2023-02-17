@@ -20,15 +20,18 @@ import RedisConfig from '@src/config/redis.config';
 import { ConfirmOrderCommandHandler } from '@src/domains/order/commands/order/confirm-order/confirm-order.command-handler';
 import { CreateOrderCommandHandler } from '@src/domains/order/commands/order/create-order/create-order.command-handler';
 import { CancelOrderCommandHandler } from '@src/domains/order/commands/order/cancel-order/cancel-order.command-handler';
+import { PlaceOrderCommandHandler } from '@src/domains/order/commands/order/place-order/place-order.command-handler';
+import { GetOrderQueryHandler } from '@src/domains/order/queries/order/get-order/get-order.query-handler';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   OrderItemCommandHandler,
   ConfirmOrderCommandHandler,
   CreateOrderCommandHandler,
   CancelOrderCommandHandler,
+  PlaceOrderCommandHandler,
 ];
 
-const queryHandlers: Type<QueryHandler>[] = [];
+const queryHandlers: Type<QueryHandler>[] = [GetOrderQueryHandler];
 
 const DomainEventsBusProvider: Provider<DomainEventsBus> = {
   provide: ProviderTokens.domainEventsBus,

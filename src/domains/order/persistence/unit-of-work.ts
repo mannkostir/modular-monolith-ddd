@@ -4,16 +4,29 @@ import { ITransactionalOutboxRepository } from '@lib/interfaces/ports/transactio
 import { IRetrieveSaga } from '@lib/interfaces/common/retrieve-saga.interface';
 import { OrderRepository } from '@src/domains/order/persistence/order/order.repository';
 import { OrderSchema } from '@src/infrastructure/database/schema/order.schema';
+import { SagaRepository } from '@src/domains/integration/persistence/saga.repository';
+import { OrderSagaSchema } from '@src/infrastructure/database/schema/order-saga.schema';
+import { PersistedSaga } from '@src/domains/integration/interfaces/persisted-saga.interface';
+import { OrderOutboxMessageRepository } from '@src/domains/order/persistence/outbox/order.outbox-message.repository';
+import { OrderOutboxMessageSchema } from '@src/infrastructure/database/schema/order.outbox-message.schema';
+import { OutboxMessage } from '@src/infrastructure/database/types/outbox-message.type';
 
 export class UnitOfWork extends TypeormUnitOfWork {
   getSagaRepository(correlationId: string): ISaveSaga & IRetrieveSaga {
-    throw new Error('Not implemented');
+    return new SagaRepository(
+      this.getOrmRepository<PersistedSaga>(OrderSagaSchema, correlationId),
+    );
   }
 
   getTransactionalOutboxRepository(
     correlationId?: string,
   ): ITransactionalOutboxRepository {
-    throw new Error('Not implemented');
+    return new OrderOutboxMessageRepository(
+      this.getOrmRepository<OutboxMessage>(
+        OrderOutboxMessageSchema,
+        correlationId,
+      ),
+    );
   }
 
   public getOrderRepository(correlationId: string): OrderRepository {

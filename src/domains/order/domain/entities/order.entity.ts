@@ -27,6 +27,10 @@ export class OrderEntity extends AggregateRoot<OrderProps> {
     return this.props.orderStatus === OrderStatus.placed;
   }
 
+  protected get isConfirmed(): boolean {
+    return this.props.orderStatus === OrderStatus.confirmed;
+  }
+
   public static create(createProps: CreateOrderProps): OrderEntity {
     return new OrderEntity({
       props: {
@@ -105,6 +109,19 @@ export class OrderEntity extends AggregateRoot<OrderProps> {
       );
 
     this.props.orderStatus = OrderStatus.cancelled;
+
+    return Result.ok();
+  }
+
+  place(): Result<void, InvalidOperationDomainError> {
+    if (!this.isConfirmed)
+      return Result.fail(
+        new InvalidOperationDomainError(
+          'Невозможно выполнить не подтверждённый заказ',
+        ),
+      );
+
+    this.props.orderStatus = OrderStatus.placed;
 
     return Result.ok();
   }

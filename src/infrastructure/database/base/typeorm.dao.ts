@@ -22,7 +22,7 @@ export abstract class TypeormDao<
     );
   }
 
-  public async execute(params: Params): Promise<Model> {
+  public async execute(params: Params): Promise<Model | undefined> {
     return this.prepareModel(params);
   }
 
@@ -31,7 +31,7 @@ export abstract class TypeormDao<
     params: Params,
   ): ExtendedQueryBuilder<Model>;
 
-  protected abstract prepareModel(params: Params): Promise<Model>;
+  protected abstract prepareModel(params: Params): Promise<Model | undefined>;
 
   protected async getOne<OneModel = Model>(
     params: Params,
