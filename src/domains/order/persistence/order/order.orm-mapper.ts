@@ -4,7 +4,7 @@ import { Order } from '@src/infrastructure/database/types/order.type';
 import {
   OrderEntity,
   OrderProps,
-} from '@src/domains/order/domain/order.entity';
+} from '@src/domains/order/domain/entities/order.entity';
 import { OrderedItemOrmMapper } from '@src/domains/order/persistence/ordered-item/ordered-item.orm-mapper';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
 
@@ -23,6 +23,7 @@ export class OrderOrmMapper extends OrmMapper<OrderEntity, OrderProps, Order> {
         ),
       ),
       customerId: new UuidVO(ormEntity.customerId),
+      orderStatus: ormEntity.orderStatus,
     };
   }
 
@@ -38,6 +39,7 @@ export class OrderOrmMapper extends OrmMapper<OrderEntity, OrderProps, Order> {
           new OrderedItemOrmMapper().toOrmEntity(orderedItem),
         ),
       ),
+      orderStatus: props.orderStatus,
     };
   }
 }

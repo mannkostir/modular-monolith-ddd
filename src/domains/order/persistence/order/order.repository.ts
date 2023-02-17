@@ -5,7 +5,7 @@ import { Order } from '@src/infrastructure/database/types/order.type';
 import {
   OrderEntity,
   OrderProps,
-} from '@src/domains/order/domain/order.entity';
+} from '@src/domains/order/domain/entities/order.entity';
 import { OrderOrmMapper } from '@src/domains/order/persistence/order/order.orm-mapper';
 
 export class OrderRepository extends TypeormRepository<

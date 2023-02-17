@@ -1,9 +1,16 @@
 import { EntitySchema } from 'typeorm';
 import { Order } from '../types/order.type';
+import { OrderStatus } from '@src/domains/order/domain/types/order-status.type';
 
 export const OrderSchema = new EntitySchema<Order>({
   columns: {
     id: { type: 'uuid', nullable: false, generated: 'uuid', primary: true },
+    orderStatus: {
+      type: 'enum',
+      nullable: false,
+      default: OrderStatus.pending,
+      enum: OrderStatus,
+    },
   },
   relations: {
     orderedItems: {

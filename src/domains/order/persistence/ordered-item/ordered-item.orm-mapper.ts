@@ -2,7 +2,7 @@ import { OrmMapper } from '@src/infrastructure/database/base/orm-mapper';
 import {
   OrderedItemEntity,
   OrderedItemProps,
-} from '@src/domains/order/domain/ordered-item.entity';
+} from '@src/domains/order/domain/entities/ordered-item.entity';
 import { OrderedItem } from '@src/infrastructure/database/types/ordered-item.type';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
 import { OrmEntityProps } from '@src/infrastructure/database/types/orm-entity-props.type';
