@@ -52,7 +52,7 @@ export class UuidVOFactory {
     return new NotNullUuid(uuid());
   }
 
-  public create(value: string | null) {
+  public create(value?: string | null) {
     if (!value) {
       return new NullUuid();
     }

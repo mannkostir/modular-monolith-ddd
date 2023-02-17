@@ -5,4 +5,5 @@ export enum ProviderTokens {
   asyncDomainEventsPublisher = 'async_domain_events_publisher_token',
   domainEventsAsyncBus = 'domain_events_async_bus',
   logger = 'logger',
+  dataSource = 'data_source',
 }

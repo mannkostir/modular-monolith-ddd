@@ -2,10 +2,19 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { Query } from '@lib/base/communication/query';
+import { DataSource } from 'typeorm';
+import { ProviderTokens } from '@lib/types/provider-tokens.type';
 
 @Injectable()
 export abstract class QueryHandler implements OnModuleInit {
   public constructor(protected readonly moduleRef: ModuleRef) {}
+
+  private _dataSource: DataSource | undefined;
+
+  protected get dataSource(): DataSource {
+    if (!this._dataSource) throw new Error('Data Source not assigned');
+    return this._dataSource;
+  }
 
   private _configService: ConfigService | undefined;
 
@@ -22,5 +31,6 @@ export abstract class QueryHandler implements OnModuleInit {
 
   onModuleInit() {
     this._configService = this.moduleRef.get(ConfigService);
+    this._dataSource = this.moduleRef.get(ProviderTokens.dataSource);
   }
 }

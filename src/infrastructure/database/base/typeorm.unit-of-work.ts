@@ -18,6 +18,8 @@ import { Result } from '@lib/utils/result.util';
 import { Exception } from '@lib/base/common/exception';
 import { IsolationLevel } from 'typeorm/driver/types/IsolationLevel';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
+import { Inject } from '@nestjs/common';
+import { ProviderTokens } from '@lib/types/provider-tokens.type';
 
 export abstract class TypeormUnitOfWork implements IUnitOfWork {
   aggregates: Map<string, AggregateRoot[]> = new Map();
@@ -25,7 +27,9 @@ export abstract class TypeormUnitOfWork implements IUnitOfWork {
     new Map();
   private queryRunners: Map<string, QueryRunner> = new Map();
 
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    @Inject(ProviderTokens.dataSource) private readonly dataSource: DataSource,
+  ) {}
 
   abstract getTransactionalOutboxRepository(
     correlationId?: string,

@@ -12,12 +12,14 @@ import { DomainEventsAsyncPublisher } from '@lib/base/domain/domain-events.async
 import { DomainEventsBus } from '@lib/base/common/domain-events-bus';
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
+import { GetManyItemsQueryHandler } from '@src/domains/catalog/queries/item/get-many-items/get-many-items.query-handler';
+import TypeormConfig from '@src/config/typeorm.config';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   AddItemToCatalogCommandHandler,
 ];
 
-const queryHandlers: Type<QueryHandler>[] = [];
+const queryHandlers: Type<QueryHandler>[] = [GetManyItemsQueryHandler];
 
 const DomainEventsBusProvider: Provider<DomainEventsBus> = {
   provide: ProviderTokens.domainEventsBus,
@@ -56,11 +58,17 @@ const DomainEventsAsyncPublisherProvider: Provider<DomainEventsAsyncPublisher> =
     inject: [ProviderTokens.domainEventsAsyncBus],
   };
 
+const DataSourceProvider: Provider<DataSource> = {
+  provide: ProviderTokens.dataSource,
+  useValue: TypeormConfig,
+};
+
 @Module({
   imports: [TypeOrmModule.forFeature([ItemSchema])],
   providers: [
     ...commandHandlers,
     ...queryHandlers,
+    DataSourceProvider,
     ConfigService,
     DomainEventsBusProvider,
     UnitOfWorkProvider,

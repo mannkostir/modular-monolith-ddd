@@ -1,10 +1,10 @@
 ---
-to: src/modules/<%= module %>/queries/<%= aggregate %>/<%= name %>/<%= name %>.query.ts
+to: src/domains/<%= module %>/queries/<%= aggregate %>/<%= name %>/<%= name %>.query.ts
 ---
 <%QueryName = h.changeCase.pascal(name) + 'Query'
   RequestDtoName = h.changeCase.pascal(name) + 'RequestDto'
 %>
-import { QueryBase } from 'src/lib/domain/base/query.base';
+import { Query } from '@lib/base/communication/query';
 import { <%= RequestDtoName %> } from './<%= name %>.request.dto';
 
-export class <%=QueryName%> extends QueryBase<<%= RequestDtoName %>> {}
+export class <%=QueryName%> extends Query<<%= RequestDtoName %>> {}
