@@ -2,7 +2,7 @@ import { ValueObject } from '@lib/base/domain/value-object';
 import { isUUID } from 'class-validator';
 import { v4 as uuid } from 'uuid';
 
-export abstract class UuidVO extends ValueObject<string> {
+abstract class UuidVOBase extends ValueObject<string> {
   public abstract get value(): string | null;
 
   public abstract get isNull(): boolean;
@@ -10,7 +10,7 @@ export abstract class UuidVO extends ValueObject<string> {
   public abstract isEqualTo(uuid: UuidVO): boolean;
 }
 
-class NotNullUuid extends UuidVO {
+class NotNullUuid extends UuidVOBase {
   public isNull = false as const;
 
   constructor(value: string) {
@@ -29,7 +29,7 @@ class NotNullUuid extends UuidVO {
   }
 }
 
-class NullUuid extends UuidVO {
+class NullUuid extends UuidVOBase {
   public isNull = true as const;
 
   constructor() {
@@ -44,6 +44,8 @@ class NullUuid extends UuidVO {
     return false;
   }
 }
+
+export type UuidVO = NotNullUuid | NullUuid;
 
 export class UuidVOFactory {
   public generate(): NotNullUuid {

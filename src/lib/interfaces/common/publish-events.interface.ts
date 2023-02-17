@@ -10,9 +10,15 @@ export interface IPublishEvents<
     | IHandleEvents<Event>
     | IHandleEventsAsync<Event> = IHandleEvents<Event>,
 > {
-  publish(event: Event): Promise<Result<unknown, Exception>> | void;
+  publish(
+    event: Event,
+    correlationId: string,
+  ): Promise<Result<any, Exception>> | void;
 
-  publishBulk(events: Event[]): Promise<Result<unknown, Exception>> | void;
+  publishBulk(
+    events: Event[],
+    correlationId: string,
+  ): Promise<Result<any, Exception>> | void;
 
-  register(evenToken: string, handler: Handler): void;
+  register(eventTokens: string[], handler: Handler): void;
 }

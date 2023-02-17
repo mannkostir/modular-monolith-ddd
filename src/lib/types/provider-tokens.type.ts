@@ -1,9 +1,8 @@
 export enum ProviderTokens {
   unitOfWork = 'unit_of_work_token',
-  eventBus = 'event_bus_token',
+  domainEventsBus = 'domain_events_bus',
   domainEventsPublisher = 'domain_events_publisher_token',
   asyncDomainEventsPublisher = 'async_domain_events_publisher_token',
-  asyncEventBus = 'async_event_bus',
-  integrationEventsPublisher = 'integration_events_publisher',
+  domainEventsAsyncBus = 'domain_events_async_bus',
   logger = 'logger',
 }

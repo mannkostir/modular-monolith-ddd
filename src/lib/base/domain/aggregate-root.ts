@@ -2,7 +2,7 @@ import { DomainEvent } from './domain-event';
 import { Entity } from './entity';
 
 export abstract class AggregateRoot<
-  EntityProps extends Record<string, unknown>,
+  EntityProps extends Record<string, unknown> = Record<string, unknown>,
 > extends Entity<EntityProps> {
   public isDomainProcessed = false;
 

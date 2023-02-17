@@ -24,12 +24,14 @@ export class AsyncBus<
     }
   }
 
-  register(eventToken: string, handler: Handler) {
-    if (!this.subscribers.get(eventToken)) {
-      this.subscribers.set(eventToken, []);
-    }
+  register(eventTokens: string[], handler: Handler) {
+    for (const eventToken of eventTokens) {
+      if (!this.subscribers.get(eventToken)) {
+        this.subscribers.set(eventToken, []);
+      }
 
-    (this.subscribers.get(eventToken) || []).push(handler);
+      (this.subscribers.get(eventToken) || []).push(handler);
+    }
   }
 
   onModuleDestroy(): void {

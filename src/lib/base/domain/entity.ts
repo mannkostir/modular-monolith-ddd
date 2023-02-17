@@ -15,7 +15,7 @@ export interface CreateEntityProps<T> extends Partial<BaseEntityProps> {
   props: T;
 }
 
-export abstract class Entity<Props extends Record<string, unknown>> {
+export abstract class Entity<Props extends object> {
   protected readonly rulesChecker: DomainRulesChecker;
   protected readonly _id: UuidVO;
   protected readonly props: Props;

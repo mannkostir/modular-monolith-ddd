@@ -12,7 +12,7 @@ export interface EntityProps<EntityProps> {
 }
 
 export abstract class OrmMapper<
-  EntityBase extends Entity<Record<string, unknown>>,
+  EntityBase extends Entity<object>,
   EntityProps extends Record<string, any>,
   OrmEntity,
 > implements IOrmMapper<EntityBase, OrmEntity>
@@ -23,10 +23,9 @@ export abstract class OrmMapper<
     this.manager = manager;
   }
 
-  //final
   public async toDomainEntity(ormEntity: OrmEntity): Promise<EntityBase> {
     const props = await this.toDomainProps(ormEntity);
-    const entity = ormEntity as unknown as TypeormEntity;
+    const entity = ormEntity as TypeormEntity;
 
     const constructor = this.getEntityConstructor(ormEntity);
     return new constructor({
@@ -37,28 +36,22 @@ export abstract class OrmMapper<
     });
   }
 
-  //final
   public async toOrmEntity(entity: EntityBase): Promise<OrmEntity> {
     const props = await this.toOrmProps(entity);
-    const constructor = this.getOrmEntityConstructor(entity);
-    return new constructor({
+    return {
       ...props,
       id: this.getOrmEntityId(entity, props),
       createdAt: entity.createdAt.ISOString,
       updatedAt: entity.updatedAt.ISOString,
-    });
+    } as OrmEntity;
   }
 
   protected abstract getEntityConstructor(
     ormEntity: OrmEntity,
   ): new (props: any) => EntityBase;
 
-  protected abstract getOrmEntityConstructor(
-    entity: EntityBase,
-  ): new (props: any) => OrmEntity;
-
   protected getEntityId(ormEntity: OrmEntity, props: EntityProps) {
-    return (ormEntity as unknown as TypeormEntity).id;
+    return (ormEntity as TypeormEntity).id;
   }
 
   protected getOrmEntityId(

@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
-import { GatewayModule } from '@modules/gateway/gateway.module';
+import { GatewayModule } from '@src/domains/gateway/gateway.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CatalogModule } from '@src/domains/catalog/catalog.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       }),
       inject: [ConfigService],
     }),
+    CatalogModule,
   ],
   controllers: [],
   providers: [],

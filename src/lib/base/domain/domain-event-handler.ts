@@ -1,6 +1,6 @@
 import { CommandBus, IEventHandler, QueryBus } from '@nestjs/cqrs';
 import { IHandleEvents } from '@lib/interfaces/common/handle-events.interface';
-import { IUnitOfWork } from '../../interfaces/ports/unit-of-work.interface';
+import { IUnitOfWork } from '@lib/interfaces/ports/unit-of-work.interface';
 import { Inject, Injectable } from '@nestjs/common';
 import { DomainEventsPublisher } from '@lib/base/domain/domain-events.publisher';
 import { DomainEvent } from '@lib/base/domain/domain-event';

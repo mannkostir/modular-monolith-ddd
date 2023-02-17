@@ -1,15 +1,15 @@
-import { IEventsPublisher } from '@lib/interfaces/common/events.publisher.interface';
 import { IEventHandler } from '@nestjs/cqrs';
 import { Bus } from '@lib/base/common/bus';
 import { IEvent } from '@lib/base/common/event';
 import { Result } from '@lib/utils/result.util';
 import { Exception } from '@lib/base/common/exception';
 import { UuidVOFactory } from '@lib/value-objects/uuid.value-object';
+import { IPublishEvents } from '@lib/interfaces/common/publish-events.interface';
 
 export abstract class EventsPublisher<
   TEvent extends IEvent,
   THandler extends IEventHandler,
-> implements IEventsPublisher<TEvent, THandler>
+> implements IPublishEvents<TEvent, THandler>
 {
   constructor(private bus: Bus<TEvent, THandler>) {}
 
@@ -35,6 +35,6 @@ export abstract class EventsPublisher<
   }
 
   register(eventTokens: string[], handler: THandler): void {
-    eventTokens.map((eventToken) => this.bus.register(eventToken, handler));
+    eventTokens.map((eventToken) => this.bus.register([eventToken], handler));
   }
 }

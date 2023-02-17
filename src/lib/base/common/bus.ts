@@ -31,11 +31,13 @@ export abstract class Bus<
     return lastOkResult;
   }
 
-  register(eventToken: string, handler: Handler) {
-    if (!this.subscribers.get(eventToken)) {
-      this.subscribers.set(eventToken, []);
+  register(eventTokens: string[], handler: Handler) {
+    for (const eventToken of eventTokens) {
+      if (!this.subscribers.get(eventToken)) {
+        this.subscribers.set(eventToken, []);
+      }
+      (this.subscribers.get(eventToken) || []).push(handler);
     }
-    (this.subscribers.get(eventToken) || []).push(handler);
   }
 
   private async _publish(event: Event): Promise<Result<unknown, Exception>> {
