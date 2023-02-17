@@ -29,6 +29,7 @@ export class IntegrationModule {
         const outboxRepository = dataSource.getRepository(
           options.entityTargetOrSchema,
         );
+        //TODO: Remove
         await dataSource.initialize();
         const messageRelay = new MessageRelay(
           outboxRepository,
