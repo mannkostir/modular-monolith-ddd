@@ -16,12 +16,11 @@ export class MessageBus {
   }
 
   public register(message: string, handler: IHandleMessage): void {
-    const subscribers = this.subscribers.get(message);
-
-    if (!subscribers) {
+    if (!this.subscribers.get(message)) {
       this.subscribers.set(message, []);
     }
-    (subscribers as IHandleMessage[]).push(handler);
+
+    (this.subscribers.get(message) as IHandleMessage[]).push(handler);
   }
 
   public publish(message: IMessage): void {

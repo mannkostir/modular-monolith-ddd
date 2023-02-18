@@ -1,4 +1,4 @@
-import { EntityManager } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
 import { Entity } from '@lib/base/domain/entity';
 import { IOrmMapper } from '@lib/interfaces/ports/orm-mapper.interface';
@@ -17,10 +17,10 @@ export abstract class OrmMapper<
   OrmEntity,
 > implements IOrmMapper<EntityBase, OrmEntity>
 {
-  protected manager: EntityManager | undefined;
+  protected dataSource: DataSource | undefined;
 
-  constructor(manager?: EntityManager) {
-    this.manager = manager;
+  constructor(dataSource?: DataSource) {
+    this.dataSource = dataSource;
   }
 
   public async toDomainEntity(ormEntity: OrmEntity): Promise<EntityBase> {

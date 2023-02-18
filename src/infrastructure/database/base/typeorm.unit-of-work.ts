@@ -28,7 +28,8 @@ export abstract class TypeormUnitOfWork implements IUnitOfWork {
   private queryRunners: Map<string, QueryRunner> = new Map();
 
   constructor(
-    @Inject(ProviderTokens.dataSource) private readonly dataSource: DataSource,
+    @Inject(ProviderTokens.dataSource)
+    protected readonly dataSource: DataSource,
   ) {}
 
   abstract getTransactionalOutboxRepository(

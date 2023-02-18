@@ -8,7 +8,6 @@ import { ProviderTokens } from '@lib/types/provider-tokens.type';
 import { Result } from '@lib/utils/result.util';
 import { Exception } from '@lib/base/common/exception';
 import { IMessage } from '@lib/types/message.type';
-import { ILogErrors } from '@lib/interfaces/common/log-errors.interface';
 
 @Injectable()
 export abstract class DomainEventMapper<
@@ -20,8 +19,6 @@ export abstract class DomainEventMapper<
     protected readonly unitOfWork: UnitOfWork,
     @Inject(ProviderTokens.domainEventsPublisher)
     protected readonly domainEventsPublisher: DomainEventsPublisher,
-    @Inject(ProviderTokens.logger)
-    protected readonly logger: ILogErrors,
     protected commandBus: CommandBus,
     protected queryBus: QueryBus,
   ) {
@@ -39,7 +36,6 @@ export abstract class DomainEventMapper<
   public async handle(event: DomainEvent): Promise<Result<void, Exception>> {
     const result = await this.execute(event);
     if (result.isErr) {
-      this.logger.logError(result);
       return result;
     }
 

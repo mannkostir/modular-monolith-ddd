@@ -6,6 +6,8 @@ import { UuidVO } from '@lib/value-objects/uuid.value-object';
 import { OrderStatus } from '@src/domains/order/domain/types/order-status.type';
 import { OrderConfirmedDomainEvent } from '@src/domains/order/domain/events/order-confirmed.domain-event';
 import { DomainException } from '@lib/base/common/domain.exception';
+import { ItemEntity } from '@src/domains/order/domain/entities/item.entity';
+import { OrderCancelledDomainEvent } from '@src/domains/order/domain/events/order-cancelled.domain-event';
 
 export type OrderProps = {
   customerId: UuidVO;
@@ -28,8 +30,16 @@ export class OrderEntity extends AggregateRoot<OrderProps> {
     return this.props.orderStatus === OrderStatus.placed;
   }
 
+  protected get isPaid(): boolean {
+    return this.props.orderStatus === OrderStatus.paid;
+  }
+
   protected get isConfirmed(): boolean {
     return this.props.orderStatus === OrderStatus.confirmed;
+  }
+
+  protected get total(): number {
+    return this.props.orderedItems.reduce((total, item) => item.price, 0);
   }
 
   public static create(createProps: CreateOrderProps): OrderEntity {
@@ -43,7 +53,7 @@ export class OrderEntity extends AggregateRoot<OrderProps> {
   }
 
   addItem(
-    itemId: UuidVO,
+    item: ItemEntity,
     quantity: number,
   ): Result<void, InvalidOperationDomainError> {
     if (!this.isPending)
@@ -71,7 +81,7 @@ export class OrderEntity extends AggregateRoot<OrderProps> {
     }
 
     this.props.orderedItems.push(
-      OrderedItemEntity.create({ orderId: this.id, itemId, quantity }),
+      OrderedItemEntity.create({ orderId: this.id, item, quantity }),
     );
 
     return Result.ok();
@@ -96,7 +106,7 @@ export class OrderEntity extends AggregateRoot<OrderProps> {
     this.addEvent(
       new OrderConfirmedDomainEvent({
         aggregateId: this.id.value,
-        payload: { orderId: this.id.value },
+        payload: { orderId: this.id.value, orderTotal: this.total },
       }),
     );
 
@@ -111,6 +121,13 @@ export class OrderEntity extends AggregateRoot<OrderProps> {
 
     this.props.orderStatus = OrderStatus.cancelled;
     this.props.orderedItems = [];
+
+    this.addEvent(
+      new OrderCancelledDomainEvent({
+        aggregateId: this.id.value,
+        payload: { orderId: this.id.value },
+      }),
+    );
 
     return Result.ok();
   }
@@ -130,7 +147,7 @@ export class OrderEntity extends AggregateRoot<OrderProps> {
     if (!this.isConfirmed)
       return Result.fail(
         new InvalidOperationDomainError(
-          'Невозможно выполнить не подтверждённый заказ',
+          'Невозможно начать выполнение не оплаченного заказа',
         ),
       );
 

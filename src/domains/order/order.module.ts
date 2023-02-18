@@ -26,9 +26,14 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { OrderItemHttpController } from '@src/domains/order/commands/ordered-item/order-item/order-item.http-controller';
 import { ConfirmOrderHttpController } from '@src/domains/order/commands/order/confirm-order/confirm-order.http-controller';
 import { CancelOrderHttpController } from '@src/domains/order/commands/order/cancel-order/cancel-order.http-controller';
-import { PlaceOrderHttpController } from '@src/domains/order/commands/order/place-order/place-order.http-controller';
 import { RemoveOrderHttpController } from '@src/domains/order/commands/order/remove-order/remove-order.http-controller';
 import { RemoveOrderCommandHandler } from '@src/domains/order/commands/order/remove-order/remove-order.command-handler';
+import { Saga } from '@src/domains/integration/base/saga';
+import { PlaceOrderSaga } from '@src/domains/order/sagas/place-order.saga';
+import { DomainEventMapper } from '@lib/base/domain/domain-event-mapper';
+import { PdfReportAttachedEventMapper } from '@src/domains/order/event-mappers/order-confirmed.domain-event.mapper';
+import { AsyncDomainEventHandler } from '@lib/base/domain/async-domain-event-handler';
+import { RemoveOrderEventHandler } from '@src/domains/order/event-handlers/order-cancelled/remove-order.event-handler';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   OrderItemCommandHandler,
@@ -40,6 +45,14 @@ const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
 ];
 
 const queryHandlers: Type<QueryHandler>[] = [GetOrderQueryHandler];
+
+const sagas: Type<Saga>[] = [PlaceOrderSaga];
+
+const eventMappers: Type<DomainEventMapper>[] = [PdfReportAttachedEventMapper];
+
+const eventHandlers: Type<AsyncDomainEventHandler>[] = [
+  RemoveOrderEventHandler,
+];
 
 const DomainEventsBusProvider: Provider<DomainEventsBus> = {
   provide: ProviderTokens.domainEventsBus,
@@ -97,6 +110,9 @@ const DataSourceProvider: Provider<DataSource> = {
   providers: [
     ...commandHandlers,
     ...queryHandlers,
+    ...sagas,
+    ...eventMappers,
+    ...eventHandlers,
     DataSourceProvider,
     ConfigService,
     DomainEventsBusProvider,
@@ -109,7 +125,6 @@ const DataSourceProvider: Provider<DataSource> = {
     OrderItemHttpController,
     ConfirmOrderHttpController,
     CancelOrderHttpController,
-    PlaceOrderHttpController,
     RemoveOrderHttpController,
   ],
 })

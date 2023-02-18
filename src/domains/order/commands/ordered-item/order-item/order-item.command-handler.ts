@@ -14,6 +14,9 @@ export class OrderItemCommandHandler extends CommandHandler<UnitOfWork> {
     const orderRepository = this.unitOfWork.getOrderRepository(
       command.correlationId,
     );
+    const itemRepository = this.unitOfWork.getItemRepository(
+      command.correlationId,
+    );
 
     const order = await orderRepository.findOneById(
       new UuidVO(command.payload.orderId),
@@ -21,10 +24,15 @@ export class OrderItemCommandHandler extends CommandHandler<UnitOfWork> {
     if (!order)
       return Result.fail(new EntityNotFoundDomainError('Заказ не найден'));
 
-    const addItemResult = order.addItem(
+    const item = await itemRepository.findOneById(
       new UuidVO(command.payload.itemId),
-      command.payload.quantity,
     );
+    if (!item)
+      return Result.fail(
+        new EntityNotFoundDomainError('Товар для заказа не найден'),
+      );
+
+    const addItemResult = order.addItem(item, command.payload.quantity);
     if (addItemResult.isErr) return addItemResult;
 
     const saveResult = await orderRepository.save(order);

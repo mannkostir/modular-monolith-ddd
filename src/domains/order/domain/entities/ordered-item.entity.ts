@@ -6,7 +6,7 @@ import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domai
 
 export type OrderedItemProps = {
   orderId: UuidVO;
-  itemId: UuidVO;
+  item: { id: UuidVO; price: number };
   quantity: number;
 };
 
@@ -18,7 +18,11 @@ export class OrderedItemEntity extends AggregateRoot<OrderedItemProps> {
   }
 
   public get itemId(): UuidVO {
-    return this.props.itemId;
+    return this.props.item.id;
+  }
+
+  public get price(): number {
+    return this.props.item.price * this.props.quantity;
   }
 
   public static create(createProps: CreateOrderedItemProps): OrderedItemEntity {

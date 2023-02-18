@@ -6,6 +6,7 @@ import { Result } from '@lib/utils/result.util';
 import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
 import { OrderNotFoundDomainException } from '@src/domains/order/domain/errors/order-not-found.domain-exception';
+import { OrderSaveFailedDomainException } from '@src/domains/order/domain/errors/order-save-failed.domain-exception';
 
 @CqrsCommandHandler(PlaceOrderCommand)
 export class PlaceOrderCommandHandler extends CommandHandler<UnitOfWork> {
@@ -23,6 +24,10 @@ export class PlaceOrderCommandHandler extends CommandHandler<UnitOfWork> {
 
     const placeResult = order.place();
     if (placeResult.isErr) return placeResult;
+
+    const saveResult = await orderRepository.save(order);
+    if (saveResult.isErr)
+      return Result.fail(new OrderSaveFailedDomainException());
 
     return Result.ok();
   }

@@ -6,6 +6,7 @@ import { CatalogModule } from '@src/domains/catalog/catalog.module';
 import { OrderModule } from '@src/domains/order/order.module';
 import { JwtAuthGuard } from '@src/lib/auth/guards/jwt-auth.guard';
 import { IdentityModule } from '@src/domains/identity/identity.module';
+import { PaymentModule } from '@src/domains/payment/payment.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { IdentityModule } from '@src/domains/identity/identity.module';
     CatalogModule,
     OrderModule,
     IdentityModule,
+    PaymentModule,
   ],
   controllers: [],
   providers: [

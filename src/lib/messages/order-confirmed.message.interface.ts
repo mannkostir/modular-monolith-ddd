@@ -1,7 +1,8 @@
 import { IMessage } from '@lib/types/message.type';
 
-type Payload = {
+export type OrderConfirmedPayload = {
   total: number;
+  orderId: string;
 };
 
-export type IOrderConfirmedMessage = IMessage<Payload>;
+export type IOrderConfirmedMessage = IMessage<OrderConfirmedPayload>;

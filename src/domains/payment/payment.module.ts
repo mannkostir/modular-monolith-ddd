@@ -18,6 +18,11 @@ import { MakePaymentCommandHandler } from '@src/domains/payment/commands/payment
 import { UnitOfWork } from '@src/domains/payment/persistence/unit-of-work';
 import { CreatePaymentCommandHandler } from '@src/domains/payment/commands/payment/create-payment/create-payment.command-handler';
 import { CqrsModule } from '@nestjs/cqrs';
+import { DomainEventMapper } from '@lib/base/domain/domain-event-mapper';
+import { PaymentFulfilledEventMapper } from '@src/domains/payment/event-mappers/payment-fulfilled.event-mapper';
+import { PaymentRejectedEventMapper } from '@src/domains/payment/event-mappers/payment-rejected.event-mapper';
+import { MessageController } from '@lib/base/communication/message.controller';
+import { MakePaymentMessageController } from '@src/domains/payment/commands/payment/make-payment/make-payment.message-controller';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   MakePaymentCommandHandler,
@@ -25,6 +30,15 @@ const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
 ];
 
 const queryHandlers: Type<QueryHandler>[] = [];
+
+const eventMappers: Type<DomainEventMapper>[] = [
+  PaymentFulfilledEventMapper,
+  PaymentRejectedEventMapper,
+];
+
+const messageControllers: Type<MessageController>[] = [
+  MakePaymentMessageController,
+];
 
 const DomainEventsBusProvider: Provider<DomainEventsBus> = {
   provide: ProviderTokens.domainEventsBus,
@@ -82,6 +96,8 @@ const DataSourceProvider: Provider<DataSource> = {
   providers: [
     ...commandHandlers,
     ...queryHandlers,
+    ...eventMappers,
+    ...messageControllers,
     DataSourceProvider,
     ConfigService,
     DomainEventsBusProvider,

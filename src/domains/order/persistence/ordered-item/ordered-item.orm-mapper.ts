@@ -6,12 +6,17 @@ import {
 import { OrderedItem } from '@src/infrastructure/database/types/ordered-item.type';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
 import { OrmEntityProps } from '@src/infrastructure/database/types/orm-entity-props.type';
+import { DataSource } from 'typeorm';
 
 export class OrderedItemOrmMapper extends OrmMapper<
   OrderedItemEntity,
   OrderedItemProps,
   OrderedItem
 > {
+  constructor(dataSource: DataSource) {
+    super(dataSource);
+  }
+
   protected getEntityConstructor(
     ormEntity: OrderedItem,
   ): new (props: any) => OrderedItemEntity {
@@ -21,8 +26,15 @@ export class OrderedItemOrmMapper extends OrmMapper<
   protected async toDomainProps(
     ormEntity: OrderedItem,
   ): Promise<OrderedItemProps> {
+    const item = await this.dataSource
+      ?.createQueryBuilder()
+      .select('i.price as price')
+      .from('item', 'i')
+      .where('i.id = :id', { id: ormEntity.itemId })
+      .getRawOne();
+
     return {
-      itemId: new UuidVO(ormEntity.itemId),
+      item: { id: new UuidVO(ormEntity.itemId), price: item.price },
       orderId: new UuidVO(ormEntity.orderId),
       quantity: ormEntity.quantity,
     };
@@ -34,7 +46,7 @@ export class OrderedItemOrmMapper extends OrmMapper<
     const props = entity.getCopiedProps();
 
     return {
-      itemId: props.itemId.value,
+      itemId: props.item.id.value,
       orderId: props.orderId.value,
       quantity: props.quantity,
     };

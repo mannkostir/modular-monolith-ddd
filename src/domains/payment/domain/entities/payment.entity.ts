@@ -2,18 +2,20 @@ import { AggregateRoot } from '@lib/base/domain/aggregate-root';
 import { PaymentStatus } from '@src/domains/payment/domain/types/payment-status.type';
 import { PaymentFulfilledDomainEvent } from '@src/domains/payment/domain/events/payment-fulfilled.domain-event';
 import { PaymentRejectedDomainEvent } from '@src/domains/payment/domain/events/payment-rejected.domain-event';
+import { UuidVO } from '@lib/value-objects/uuid.value-object';
 
 export type PaymentProps = {
   status: PaymentStatus;
   amount: number;
 };
 
-export type CreatePaymentProps = Omit<PaymentProps, 'status'>;
+export type CreatePaymentProps = Omit<PaymentProps, 'status'> & { id?: UuidVO };
 
 export class PaymentEntity extends AggregateRoot<PaymentProps> {
   public static create(createProps: CreatePaymentProps): PaymentEntity {
     return new PaymentEntity({
-      props: { ...createProps, status: PaymentStatus.pending },
+      props: { status: PaymentStatus.pending, amount: createProps.amount },
+      id: createProps.id,
     });
   }
 

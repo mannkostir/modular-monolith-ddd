@@ -2,7 +2,6 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { IUnitOfWork } from '@lib/interfaces/ports/unit-of-work.interface';
 import { Inject, Injectable } from '@nestjs/common';
 import { DomainEventsAsyncPublisher } from '@lib/base/domain/domain-events.async.publisher';
-import { ILogErrors } from '@lib/interfaces/common/log-errors.interface';
 import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
 import { DomainEvent } from '@lib/base/domain/domain-event';
 import { Result } from '@lib/utils/result.util';
@@ -20,8 +19,6 @@ export abstract class AsyncDomainEventHandler<
     protected readonly unitOfWork: UnitOfWork,
     @Inject(ProviderTokens.asyncDomainEventsPublisher)
     protected readonly domainEventsPublisher: DomainEventsAsyncPublisher,
-    @Inject(ProviderTokens.logger)
-    protected readonly logger: ILogErrors,
     protected commandBus: CommandBus,
     protected queryBus: QueryBus,
   ) {
@@ -38,8 +35,5 @@ export abstract class AsyncDomainEventHandler<
 
   public async handle(event: DomainEvent): Promise<void> {
     const result = await this.execute(event);
-    if (result.isErr) {
-      this.logger.logError(result);
-    }
   }
 }

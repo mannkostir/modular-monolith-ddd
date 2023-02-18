@@ -10,6 +10,8 @@ import { PersistedSaga } from '@src/domains/integration/interfaces/persisted-sag
 import { OrderOutboxMessageRepository } from '@src/domains/order/persistence/outbox/order.outbox-message.repository';
 import { OrderOutboxMessageSchema } from '@src/infrastructure/database/schema/order.outbox-message.schema';
 import { OutboxMessage } from '@src/infrastructure/database/types/outbox-message.type';
+import { ItemRepository } from '@src/domains/order/persistence/item/item.repository';
+import { ItemSchema } from '@src/infrastructure/database/schema/item.schema';
 
 export class UnitOfWork extends TypeormUnitOfWork {
   getSagaRepository(correlationId: string): ISaveSaga & IRetrieveSaga {
@@ -32,6 +34,15 @@ export class UnitOfWork extends TypeormUnitOfWork {
   public getOrderRepository(correlationId: string): OrderRepository {
     return new OrderRepository(
       this.getOrmRepository(OrderSchema),
+      this,
+      correlationId,
+      this.dataSource,
+    );
+  }
+
+  public getItemRepository(correlationId: string): ItemRepository {
+    return new ItemRepository(
+      this.getOrmRepository(ItemSchema),
       this,
       correlationId,
     );

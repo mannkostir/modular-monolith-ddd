@@ -60,7 +60,9 @@ export abstract class Saga<Data extends SagaState = SagaState>
           sagaState = defaultState;
         } else {
           return Result.fail(
-            new InvalidOperationDomainError('Started saga does not found'),
+            new InvalidOperationDomainError(
+              `Started saga does not found for correlation ${message.correlationId}`,
+            ),
           );
         }
       }

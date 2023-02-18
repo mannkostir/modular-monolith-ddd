@@ -58,7 +58,7 @@ export class MessageRelay
 
           for (const event of pendingEvents) {
             try {
-              await transactionalEntityManager.save(
+              await this.outboxRepository.save(
                 this.outboxRepository.create({
                   ...event,
                   status: OutboxMessageStatus.processed,
@@ -67,13 +67,11 @@ export class MessageRelay
 
               await this.accept([event]);
             } catch (err) {
-              await transactionalEntityManager.save(
-                this.outboxRepository.create({
-                  ...event,
-                  status: OutboxMessageStatus.rejected,
-                }),
-              );
-              console.error(err);
+              const entity = this.outboxRepository.create({
+                ...event,
+                status: OutboxMessageStatus.rejected,
+              });
+              await this.outboxRepository.save<OutboxMessage>(entity);
             }
           }
         })

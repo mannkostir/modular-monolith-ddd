@@ -1,5 +1,5 @@
 import { TypeormRepository } from '@src/infrastructure/database/base/typeorm.repository';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { TypeormUnitOfWork } from '@src/infrastructure/database/base/typeorm.unit-of-work';
 import { Order } from '@src/infrastructure/database/types/order.type';
 import {
@@ -17,7 +17,13 @@ export class OrderRepository extends TypeormRepository<
     repository: Repository<Order>,
     unitOfWork: TypeormUnitOfWork,
     correlationId: string,
+    dataSource: DataSource,
   ) {
-    super(repository, new OrderOrmMapper(), unitOfWork, correlationId);
+    super(
+      repository,
+      new OrderOrmMapper(dataSource),
+      unitOfWork,
+      correlationId,
+    );
   }
 }

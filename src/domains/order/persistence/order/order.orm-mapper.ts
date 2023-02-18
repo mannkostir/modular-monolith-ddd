@@ -7,8 +7,16 @@ import {
 } from '@src/domains/order/domain/entities/order.entity';
 import { OrderedItemOrmMapper } from '@src/domains/order/persistence/ordered-item/ordered-item.orm-mapper';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
+import { DataSource } from 'typeorm';
 
 export class OrderOrmMapper extends OrmMapper<OrderEntity, OrderProps, Order> {
+  dataSource: DataSource;
+
+  constructor(dataSource: DataSource) {
+    super();
+    this.dataSource = dataSource;
+  }
+
   protected getEntityConstructor(
     ormEntity: Order,
   ): new (props: any) => OrderEntity {
@@ -19,7 +27,7 @@ export class OrderOrmMapper extends OrmMapper<OrderEntity, OrderProps, Order> {
     return {
       orderedItems: await Promise.all(
         ormEntity.orderedItems.map((orderedItem) =>
-          new OrderedItemOrmMapper().toDomainEntity(orderedItem),
+          new OrderedItemOrmMapper(this.dataSource).toDomainEntity(orderedItem),
         ),
       ),
       customerId: new UuidVO(ormEntity.customerId),
@@ -36,7 +44,7 @@ export class OrderOrmMapper extends OrmMapper<OrderEntity, OrderProps, Order> {
       customerId: props.customerId.value,
       orderedItems: await Promise.all(
         props.orderedItems.map((orderedItem) =>
-          new OrderedItemOrmMapper().toOrmEntity(orderedItem),
+          new OrderedItemOrmMapper(this.dataSource).toOrmEntity(orderedItem),
         ),
       ),
       orderStatus: props.orderStatus,

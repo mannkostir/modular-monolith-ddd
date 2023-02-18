@@ -1,6 +1,9 @@
-import { IsNumberString } from 'class-validator';
+import { IsNumberString, IsUUID } from 'class-validator';
 
 export class CreatePaymentRequestDto {
   @IsNumberString()
   amount!: number;
+
+  @IsUUID()
+  paymentId?: string;
 }
