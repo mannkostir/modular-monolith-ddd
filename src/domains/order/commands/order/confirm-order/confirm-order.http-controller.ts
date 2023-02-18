@@ -1,9 +1,9 @@
 import { HttpController } from '@lib/base/common/http-controller';
 import { NoContentResponseDecorator } from '@lib/decorators/no-content-response.decorator';
 import { Body, Controller, Patch } from '@nestjs/common';
-import { ConfirmOrderRequestDto } from '@src/domains/order/commands/order/create-order/confirm-order/confirm-order.request.dto';
+import { ConfirmOrderRequestDto } from '@src/domains/order/commands/order/confirm-order/confirm-order.request.dto';
 import { UuidParam } from '@lib/decorators/uuid-param.decorator';
-import { ConfirmOrderCommand } from '@src/domains/order/commands/order/create-order/confirm-order/confirm-order.command';
+import { ConfirmOrderCommand } from '@src/domains/order/commands/order/confirm-order/confirm-order.command';
 import { Result } from '@lib/utils/result.util';
 import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
 import { ApiTags } from '@nestjs/swagger';
