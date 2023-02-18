@@ -12,10 +12,13 @@ export const OrderedItemSchema = new EntitySchema<OrderedItem>({
     order: {
       type: 'many-to-one',
       target: 'Order',
+      onDelete: 'CASCADE',
+      orphanedRowAction: 'delete',
     },
     item: {
       type: 'many-to-one',
       target: 'Item',
+      onDelete: 'CASCADE',
     },
   },
   name: 'OrderedItem',

@@ -113,7 +113,10 @@ export abstract class TypeormRepository<
     return this.repository
       .save(ormEntity)
       .then((entity) => Result.ok({ id: new UuidVO(entity.id) }))
-      .catch((err) => Result.fail(new SavingPersistenceException(err)));
+      .catch((err) => {
+        console.error(err);
+        return Result.fail(new SavingPersistenceException(err));
+      });
   }
 
   async saveMany(

@@ -109,6 +109,7 @@ export class OrderEntity extends AggregateRoot<OrderProps> {
       );
 
     this.props.orderStatus = OrderStatus.cancelled;
+    this.props.orderedItems = [];
 
     return Result.ok();
   }

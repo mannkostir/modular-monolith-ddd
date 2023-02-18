@@ -25,6 +25,7 @@ import { GetOrderQueryHandler } from '@src/domains/order/queries/order/get-order
 import { CqrsModule } from '@nestjs/cqrs';
 import { OrderItemHttpController } from '@src/domains/order/commands/ordered-item/order-item/order-item.http-controller';
 import { ConfirmOrderHttpController } from '@src/domains/order/commands/order/confirm-order/confirm-order.http-controller';
+import { CancelOrderHttpController } from '@src/domains/order/commands/order/cancel-order/cancel-order.http-controller';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   OrderItemCommandHandler,
@@ -100,6 +101,10 @@ const DataSourceProvider: Provider<DataSource> = {
     AsyncDomainEventsBusProvider,
     DomainEventsAsyncPublisherProvider,
   ],
-  controllers: [OrderItemHttpController, ConfirmOrderHttpController],
+  controllers: [
+    OrderItemHttpController,
+    ConfirmOrderHttpController,
+    CancelOrderHttpController,
+  ],
 })
 export class OrderModule {}
