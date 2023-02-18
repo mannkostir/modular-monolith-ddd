@@ -12,8 +12,7 @@ async function bootstrap() {
 
   const options = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('Izumator')
-    .setDescription('Izumator API description')
+    .setTitle('Modular Monolith Example')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, options);

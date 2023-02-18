@@ -1,8 +1,12 @@
-import { IsNumberString, IsString } from 'class-validator';
+import { IsInt, IsPositive, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class AddItemToCatalogRequestDto {
   @IsString()
+  @ApiProperty()
   public readonly name!: string;
-  @IsNumberString()
+  @IsInt()
+  @IsPositive()
+  @ApiProperty()
   public readonly price!: number;
 }
