@@ -1,15 +1,15 @@
 import { HttpController } from '@src/domains/gateway/base/http-controller';
 import { NoContentResponseDecorator } from '@src/domains/gateway/decorators/no-content-response.decorator';
-import { Body, Controller, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { CreateUserCommand } from '@lib/communication/gateway-interface/user/commands/create-user/create-user.command';
 import { Result } from '@lib/utils/result.util';
 import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from '@src/domains/gateway/auth/decorators/public.decorator';
 import { AuthGuard } from '@nestjs/passport';
-import { SignUpRequestDto } from '@lib/communication/gateway-interface/user/commands/sign-in/sign-up.request.dto';
+import { SignInRequestDto } from '@lib/communication/gateway-interface/user/queries/sign-in/sign-in.request.dto';
 import { ResponseDecorator } from '@src/domains/gateway/decorators/response.decorator';
-import { SignInResponseDto } from '@lib/communication/gateway-interface/user/commands/sign-in/sign-in.response.dto';
+import { SignInResponseDto } from '@lib/communication/gateway-interface/user/queries/sign-in/sign-in.response.dto';
 import { GenerateTokenCommand } from '@lib/communication/gateway-interface/user/commands/generate-token/generate-token.command';
 import { ActorId } from '@src/domains/gateway/decorators/actor-id.decorator';
 
@@ -21,7 +21,7 @@ export class AuthHttpController extends HttpController {
   @UseGuards(AuthGuard('local'))
   @Post('/sign-in')
   private async signIn(
-    @Query() body: SignUpRequestDto,
+    @Body() body: SignInRequestDto,
     @ActorId() userId: string,
   ): Promise<SignInResponseDto> {
     // const getUserResult = await this.queryBus.execute<
@@ -50,7 +50,7 @@ export class AuthHttpController extends HttpController {
 
   @NoContentResponseDecorator('Sign up')
   @Post('/sign-up')
-  private async signUp(@Body() body: SignUpRequestDto) {
+  private async signUp(@Body() body: SignInRequestDto) {
     const result = await this.commandBus.execute<
       CreateUserCommand,
       Result<void, InvalidOperationDomainError>
