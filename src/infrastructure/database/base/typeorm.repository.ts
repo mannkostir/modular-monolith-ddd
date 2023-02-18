@@ -168,9 +168,12 @@ export abstract class TypeormRepository<
     const ormEntity = ormEntityMappingResult.unwrap();
 
     return this.repository
-      .save(ormEntity)
+      .remove(ormEntity)
       .then((entity) => Result.ok({ id: new UuidVO(entity.id) }))
-      .catch((err) => Result.fail(new SavingPersistenceException(err)));
+      .catch((err) => {
+        console.error(err);
+        return Result.fail(new SavingPersistenceException(err));
+      });
   }
 
   async removeMany(entities: DomainEntity[]): Promise<DomainEntity[]> {

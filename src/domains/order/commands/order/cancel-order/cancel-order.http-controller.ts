@@ -17,11 +17,11 @@ export class CancelOrderHttpController extends HttpController {
     @Body() body: CancelOrderRequestDto,
     @UuidParam('id') orderId: string,
   ) {
-    const result = await this.commandBus.execute<
+    const cancelResult = await this.commandBus.execute<
       CancelOrderCommand,
       Result<void, InvalidOperationDomainError>
     >(new CancelOrderCommand({ payload: { ...body, orderId } }));
 
-    return result.unwrap();
+    return cancelResult.unwrap();
   }
 }

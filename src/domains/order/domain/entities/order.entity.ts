@@ -5,6 +5,7 @@ import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domai
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
 import { OrderStatus } from '@src/domains/order/domain/types/order-status.type';
 import { OrderConfirmedDomainEvent } from '@src/domains/order/domain/events/order-confirmed.domain-event';
+import { DomainException } from '@lib/base/common/domain.exception';
 
 export type OrderProps = {
   customerId: UuidVO;
@@ -110,6 +111,17 @@ export class OrderEntity extends AggregateRoot<OrderProps> {
 
     this.props.orderStatus = OrderStatus.cancelled;
     this.props.orderedItems = [];
+
+    return Result.ok();
+  }
+
+  remove(): Result<void, DomainException> {
+    if (!this.isCancelled)
+      return Result.fail(
+        new InvalidOperationDomainError(
+          'Удалить можно только отменённый заказ',
+        ),
+      );
 
     return Result.ok();
   }

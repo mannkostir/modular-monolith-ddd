@@ -21,7 +21,11 @@ export class OrderItemCommandHandler extends CommandHandler<UnitOfWork> {
     if (!order)
       return Result.fail(new EntityNotFoundDomainError('Заказ не найден'));
 
-    order.addItem(new UuidVO(command.payload.itemId), command.payload.quantity);
+    const addItemResult = order.addItem(
+      new UuidVO(command.payload.itemId),
+      command.payload.quantity,
+    );
+    if (addItemResult.isErr) return addItemResult;
 
     const saveResult = await orderRepository.save(order);
     if (saveResult.isErr) return Result.fail(new InvalidOperationDomainError());

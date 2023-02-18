@@ -1,8 +1,7 @@
-import { DomainException } from '@lib/base/common/domain.exception';
-import { DomainExceptionCode } from '@lib/types/domain-exception-code.type';
+import { EntityNotFoundDomainError } from '@src/infrastructure/database/errors/entity-not-found.persistence.exception';
 
-export class OrderNotFoundDomainException extends DomainException {
+export class OrderNotFoundDomainException extends EntityNotFoundDomainError {
   constructor() {
-    super(DomainExceptionCode.notFound, 'Заказ не найден');
+    super('Заказ не найден');
   }
 }

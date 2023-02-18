@@ -26,6 +26,9 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { OrderItemHttpController } from '@src/domains/order/commands/ordered-item/order-item/order-item.http-controller';
 import { ConfirmOrderHttpController } from '@src/domains/order/commands/order/confirm-order/confirm-order.http-controller';
 import { CancelOrderHttpController } from '@src/domains/order/commands/order/cancel-order/cancel-order.http-controller';
+import { PlaceOrderHttpController } from '@src/domains/order/commands/order/place-order/place-order.http-controller';
+import { RemoveOrderHttpController } from '@src/domains/order/commands/order/remove-order/remove-order.http-controller';
+import { RemoveOrderCommandHandler } from '@src/domains/order/commands/order/remove-order/remove-order.command-handler';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   OrderItemCommandHandler,
@@ -33,6 +36,7 @@ const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   CreateOrderCommandHandler,
   CancelOrderCommandHandler,
   PlaceOrderCommandHandler,
+  RemoveOrderCommandHandler,
 ];
 
 const queryHandlers: Type<QueryHandler>[] = [GetOrderQueryHandler];
@@ -105,6 +109,8 @@ const DataSourceProvider: Provider<DataSource> = {
     OrderItemHttpController,
     ConfirmOrderHttpController,
     CancelOrderHttpController,
+    PlaceOrderHttpController,
+    RemoveOrderHttpController,
   ],
 })
 export class OrderModule {}
