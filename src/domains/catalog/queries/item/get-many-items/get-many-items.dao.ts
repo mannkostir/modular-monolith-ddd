@@ -1,6 +1,5 @@
 import { PaginatedResponse } from '@lib/base/common/paginated.response';
 import { PaginationQuery } from '@lib/interfaces/common/pagination-query.interface';
-import { ApiProperty } from '@nestjs/swagger';
 import {
   DaoParams,
   TypeormDao,
@@ -12,18 +11,15 @@ export interface GetManyItemsParams extends DaoParams, PaginationQuery {
   name?: string;
 }
 
-class GetManyItemsModel {
-  @ApiProperty()
-  name!: string;
+export type GetManyItemsModel = {
+  name: string;
 
-  @ApiProperty()
-  price!: string;
+  price: string;
 
-  @ApiProperty()
-  id!: string;
-}
+  id: string;
+};
 
-export class GetManyItemsPaginatedModel extends PaginatedResponse<GetManyItemsModel> {}
+export type GetManyItemsPaginatedModel = PaginatedResponse<GetManyItemsModel>;
 
 export class GetManyItemsDao extends TypeormDao<
   GetManyItemsPaginatedModel,
@@ -40,7 +36,7 @@ export class GetManyItemsDao extends TypeormDao<
     params: GetManyItemsParams,
   ): ExtendedQueryBuilder<GetManyItemsPaginatedModel> {
     qb.select(['item.name as name', 'item.id as id', 'item.price as price'])
-      .from('items', 'item')
+      .from('item', 'item')
       .addSpecification(new QueryByNameSpecification(params));
 
     return qb;

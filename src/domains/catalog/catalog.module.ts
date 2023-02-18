@@ -20,6 +20,7 @@ import RedisConfig from '@src/config/redis.config';
 import { CatalogOutboxMessageSchema } from '@src/infrastructure/database/schema/catalog.outbox-message.schema';
 import { CqrsModule } from '@nestjs/cqrs';
 import { AddItemToCatalogHttpController } from '@src/domains/catalog/commands/item/add-item-to-catalog/add-item-to-catalog.http-controller';
+import { GetManyItemsHttpController } from '@src/domains/catalog/queries/item/get-many-items/get-many-items.http-controller';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   AddItemToCatalogCommandHandler,
@@ -92,6 +93,6 @@ const DataSourceProvider: Provider<DataSource> = {
     AsyncDomainEventsBusProvider,
     DomainEventsAsyncPublisherProvider,
   ],
-  controllers: [AddItemToCatalogHttpController],
+  controllers: [AddItemToCatalogHttpController, GetManyItemsHttpController],
 })
 export class CatalogModule {}
