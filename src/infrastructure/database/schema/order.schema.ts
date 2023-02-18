@@ -12,6 +12,7 @@ export const OrderSchema = new EntitySchema<Order>({
       default: OrderStatus.pending,
       enum: OrderStatus,
     },
+    customerId: { type: 'uuid', nullable: false },
   },
   relations: {
     orderedItems: {

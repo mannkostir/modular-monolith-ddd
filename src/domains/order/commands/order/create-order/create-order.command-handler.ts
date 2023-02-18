@@ -7,12 +7,13 @@ import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domai
 import { OrderEntity } from '@src/domains/order/domain/entities/order.entity';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
 import { OrderSaveFailedDomainException } from '@src/domains/order/domain/errors/order-save-failed.domain-exception';
+import { EntityId } from '@lib/communication/gateway-interface/api-types/entity-id.api-type';
 
 @CqrsCommandHandler(CreateOrderCommand)
 export class CreateOrderCommandHandler extends CommandHandler<UnitOfWork> {
   async handle(
     command: CreateOrderCommand,
-  ): Promise<Result<void, InvalidOperationDomainError>> {
+  ): Promise<Result<EntityId, InvalidOperationDomainError>> {
     const orderRepository = this.unitOfWork.getOrderRepository(
       command.correlationId,
     );
@@ -25,6 +26,6 @@ export class CreateOrderCommandHandler extends CommandHandler<UnitOfWork> {
     if (saveResult.isErr)
       return Result.fail(new OrderSaveFailedDomainException());
 
-    return Result.ok();
+    return Result.ok({ id: saveResult.unwrap().id.value });
   }
 }

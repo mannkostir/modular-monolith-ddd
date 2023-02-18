@@ -17,12 +17,16 @@ import { UserSchema } from '@src/infrastructure/database/schema/user.schema';
 import { CreateUserCommandHandler } from '@src/domains/identity/commands/user/create-user/create-user.command-handler';
 import { UnitOfWork } from '@src/domains/identity/persistence/unit-of-work';
 import { CqrsModule } from '@nestjs/cqrs';
+import { GetUserQueryHandler } from '@src/domains/identity/queries/user/get-user/get-user.query-handler';
+import { GenerateTokenCommandHandler } from '@src/domains/identity/commands/user/generate-token/generate-token.command-handler';
+import { JwtService } from '@nestjs/jwt';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   CreateUserCommandHandler,
+  GenerateTokenCommandHandler,
 ];
 
-const queryHandlers: Type<QueryHandler>[] = [];
+const queryHandlers: Type<QueryHandler>[] = [GetUserQueryHandler];
 
 const DomainEventsBusProvider: Provider<DomainEventsBus> = {
   provide: ProviderTokens.domainEventsBus,
@@ -80,6 +84,7 @@ const DataSourceProvider: Provider<DataSource> = {
   providers: [
     ...commandHandlers,
     ...queryHandlers,
+    JwtService,
     DataSourceProvider,
     ConfigService,
     DomainEventsBusProvider,

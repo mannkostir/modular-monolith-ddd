@@ -1,7 +1,7 @@
 import { CommandHandler as CqrsCommandHandler } from '@nestjs/cqrs';
 import { UnitOfWork } from '@src/domains/identity/persistence/unit-of-work';
 import { CommandHandler } from '@lib/base/communication/command-handler';
-import { CreateUserCommand } from './create-user.command';
+import { CreateUserCommand } from '@lib/communication/gateway-interface/user/commands/create-user/create-user.command';
 import { Result } from '@lib/utils/result.util';
 import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
 import { UserEntity } from '@src/domains/identity/domain/entities/user.entity';

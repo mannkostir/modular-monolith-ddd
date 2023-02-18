@@ -3,4 +3,5 @@ export type User = {
   password: string;
   email: string;
   createdAt: Date;
+  token: string;
 };
