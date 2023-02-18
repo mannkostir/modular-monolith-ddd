@@ -3,14 +3,22 @@ import {
   TypeormDao,
 } from '@src/infrastructure/database/base/typeorm.dao';
 import { ExtendedQueryBuilder } from '@src/infrastructure/database/base/extended-typeorm-query-builder';
-import { Order } from '@lib/communication/gateway-interface/order/queries/get-order/order.api-type';
+import { OrderStatus } from '@src/domains/order/domain/types/order-status.type';
 
 export interface GetOrderParams extends DaoParams {
   invoiceId?: string;
   customerId?: string;
 }
 
-export type GetOrderModel = Order;
+export type GetOrderModel = {
+  id: string;
+
+  invoiceId: string;
+
+  status: OrderStatus;
+
+  customerId: string;
+};
 
 export class GetOrderDao extends TypeormDao<GetOrderModel, GetOrderParams> {
   protected prepareModel(

@@ -1,14 +1,16 @@
 import { TypeormDao } from '@src/infrastructure/database/base/typeorm.dao';
 import { ExtendedQueryBuilder } from '@src/infrastructure/database/base/extended-typeorm-query-builder';
 import { QueryByEmailSpecification } from '@src/infrastructure/database/specifications/query-by-email.specification';
-import { User } from '@lib/communication/gateway-interface/api-types/user.api-type';
 
 export type GetUserParams = {
   id?: string;
   email?: string;
 };
 
-export type GetUserModel = User;
+export type GetUserModel = {
+  id: string;
+  email: string;
+};
 
 export class GetUserDao extends TypeormDao<GetUserModel, GetUserParams> {
   protected prepareModel(

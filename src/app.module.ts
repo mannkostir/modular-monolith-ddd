@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
-import { GatewayModule } from '@src/domains/gateway/gateway.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CatalogModule } from '@src/domains/catalog/catalog.module';
 import { OrderModule } from '@src/domains/order/order.module';
+import { JwtAuthGuard } from '@src/lib/auth/guards/jwt-auth.guard';
+import { IdentityModule } from '@src/domains/identity/identity.module';
 
 @Module({
   imports: [
@@ -12,7 +13,6 @@ import { OrderModule } from '@src/domains/order/order.module';
       isGlobal: true,
       load: [configuration],
     }),
-    GatewayModule,
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
@@ -37,8 +37,14 @@ import { OrderModule } from '@src/domains/order/order.module';
     }),
     CatalogModule,
     OrderModule,
+    IdentityModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      useClass: JwtAuthGuard,
+      provide: 'APP_GUARD',
+    },
+  ],
 })
 export class AppModule {}

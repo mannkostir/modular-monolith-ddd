@@ -18,15 +18,27 @@ import { CreateUserCommandHandler } from '@src/domains/identity/commands/user/cr
 import { UnitOfWork } from '@src/domains/identity/persistence/unit-of-work';
 import { CqrsModule } from '@nestjs/cqrs';
 import { GetUserQueryHandler } from '@src/domains/identity/queries/user/get-user/get-user.query-handler';
-import { GenerateTokenCommandHandler } from '@src/domains/identity/commands/user/generate-token/generate-token.command-handler';
+import { GenerateTokenQueryHandler } from '@src/domains/identity/queries/generate-token/generate-token.query-handler';
 import { JwtService } from '@nestjs/jwt';
+import { JwtAuthStrategy } from '@lib/auth/strategies/jwt-auth.strategy';
+import { SignUpHttpController } from '@src/domains/identity/commands/user/sign-up/sign-up.http-controller';
+import { GetUserDao } from '@src/domains/identity/queries/user/get-user/get-user.dao';
+import { SignInHttpController } from '@src/domains/identity/queries/user/sign-in/sign-in.http-controller';
+import { LocalAuthStrategy } from '@lib/auth/strategies/local-auth.strategy';
+import { PasswordVO } from '@src/domains/identity/domain/value-objects/password.value-object';
+import { GetOneUserForAuthDao } from '@lib/auth/strategies/get-one-user-for-auth.dao';
+import { UserForAuth } from '@lib/auth/interfaces/user-for-auth.type';
+import { AttachedUser } from '@lib/auth/interfaces/attached-user';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   CreateUserCommandHandler,
-  GenerateTokenCommandHandler,
 ];
 
-const queryHandlers: Type<QueryHandler>[] = [GetUserQueryHandler];
+const queryHandlers: Type<QueryHandler>[] = [
+  GetUserQueryHandler,
+  GenerateTokenQueryHandler,
+  GenerateTokenQueryHandler,
+];
 
 const DomainEventsBusProvider: Provider<DomainEventsBus> = {
   provide: ProviderTokens.domainEventsBus,
@@ -84,7 +96,16 @@ const DataSourceProvider: Provider<DataSource> = {
   providers: [
     ...commandHandlers,
     ...queryHandlers,
-    JwtService,
+    {
+      provide: JwtService,
+      useFactory: (configService: ConfigService) => {
+        return new JwtService({
+          secret: configService.get('JWT_SECRET'),
+          signOptions: { expiresIn: '30d' },
+        });
+      },
+      inject: [ConfigService],
+    },
     DataSourceProvider,
     ConfigService,
     DomainEventsBusProvider,
@@ -92,6 +113,46 @@ const DataSourceProvider: Provider<DataSource> = {
     DomainEventsPublisherProvider,
     AsyncDomainEventsBusProvider,
     DomainEventsAsyncPublisherProvider,
+    {
+      provide: JwtAuthStrategy,
+      useFactory: (dataSource: DataSource) => {
+        return new JwtAuthStrategy('secret', {
+          async getUserById(id: string): Promise<AttachedUser | undefined> {
+            const user = await new GetUserDao(dataSource).execute({ id });
+            return user ? { id: user.id } : undefined;
+          },
+        });
+      },
+      inject: [DataSource],
+    },
+    {
+      provide: LocalAuthStrategy,
+      useFactory: (dataSource: DataSource) => {
+        return new LocalAuthStrategy(
+          'email',
+          {
+            async getUserByEmail(
+              email: string,
+            ): Promise<UserForAuth | undefined> {
+              const user = new GetOneUserForAuthDao(dataSource).execute({
+                email,
+              });
+              return user;
+            },
+          },
+          {
+            compare(
+              decrypted: string,
+              encrypted: string,
+            ): boolean | Promise<boolean> {
+              return new PasswordVO(encrypted).compare(decrypted);
+            },
+          },
+        );
+      },
+      inject: [DataSource],
+    },
   ],
+  controllers: [SignUpHttpController, SignInHttpController],
 })
 export class IdentityModule {}

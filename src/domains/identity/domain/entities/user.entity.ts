@@ -1,8 +1,10 @@
 import { AggregateRoot } from '@lib/base/domain/aggregate-root';
+import { PasswordVO } from '@src/domains/identity/domain/value-objects/password.value-object';
+import { EmailVO } from '@lib/value-objects/email.value-object';
 
 export type UserProps = {
-  email: string;
-  password: string;
+  email: EmailVO;
+  password: PasswordVO;
 };
 
 export type CreateUserProps = UserProps;

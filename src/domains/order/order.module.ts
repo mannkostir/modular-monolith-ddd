@@ -17,7 +17,7 @@ import { UnitOfWork } from '@src/domains/order/persistence/unit-of-work';
 import { IntegrationModule } from '@src/domains/integration/integration.module';
 import { OrderOutboxMessageSchema } from '@src/infrastructure/database/schema/order.outbox-message.schema';
 import RedisConfig from '@src/config/redis.config';
-import { ConfirmOrderCommandHandler } from '@src/domains/order/commands/order/confirm-order/confirm-order.command-handler';
+import { ConfirmOrderCommandHandler } from '@src/domains/order/commands/order/create-order/confirm-order/confirm-order.command-handler';
 import { CreateOrderCommandHandler } from '@src/domains/order/commands/order/create-order/create-order.command-handler';
 import { CancelOrderCommandHandler } from '@src/domains/order/commands/order/cancel-order/cancel-order.command-handler';
 import { PlaceOrderCommandHandler } from '@src/domains/order/commands/order/place-order/place-order.command-handler';

@@ -1,16 +1,16 @@
 import { CommandHandler as CqrsCommandHandler } from '@nestjs/cqrs';
 import { UnitOfWork } from '@src/domains/order/persistence/unit-of-work';
 import { CommandHandler } from '@lib/base/communication/command-handler';
-import { OrderItemCommand } from '@src/domains/order/commands/ordered-item/order-item/order-item.command';
+import { ConfirmOrderCommand } from '@src/domains/order/commands/order/create-order/confirm-order/confirm-order.command';
 import { Result } from '@lib/utils/result.util';
-import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
-import { Exception } from '@lib/base/common/exception';
 import { EntityNotFoundDomainError } from '@src/infrastructure/database/errors/entity-not-found.persistence.exception';
+import { Exception } from '@lib/base/common/exception';
+import { OrderSaveFailedDomainException } from '@src/domains/order/domain/errors/order-save-failed.domain-exception';
 
-@CqrsCommandHandler(OrderItemCommand)
-export class OrderItemCommandHandler extends CommandHandler<UnitOfWork> {
-  async handle(command: OrderItemCommand): Promise<Result<void, Exception>> {
+@CqrsCommandHandler(ConfirmOrderCommand)
+export class ConfirmOrderCommandHandler extends CommandHandler<UnitOfWork> {
+  async handle(command: ConfirmOrderCommand): Promise<Result<void, Exception>> {
     const orderRepository = this.unitOfWork.getOrderRepository(
       command.correlationId,
     );
@@ -21,10 +21,11 @@ export class OrderItemCommandHandler extends CommandHandler<UnitOfWork> {
     if (!order)
       return Result.fail(new EntityNotFoundDomainError('Заказ не найден'));
 
-    order.addItem(new UuidVO(command.payload.itemId), command.payload.quantity);
+    order.confirm();
 
     const saveResult = await orderRepository.save(order);
-    if (saveResult.isErr) return Result.fail(new InvalidOperationDomainError());
+    if (saveResult.isErr)
+      return Result.fail(new OrderSaveFailedDomainException());
 
     return Result.ok();
   }

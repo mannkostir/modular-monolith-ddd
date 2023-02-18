@@ -1,7 +1,7 @@
 import { CommandHandler as CqrsCommandHandler } from '@nestjs/cqrs';
 import { UnitOfWork } from '@src/domains/order/persistence/unit-of-work';
 import { CommandHandler } from '@lib/base/communication/command-handler';
-import { CancelOrderCommand } from '@lib/communication/gateway-interface/order/commands/cancel-order/cancel-order.command';
+import { CancelOrderCommand } from '@src/domains/order/commands/order/cancel-order/cancel-order.command';
 import { Result } from '@lib/utils/result.util';
 import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';

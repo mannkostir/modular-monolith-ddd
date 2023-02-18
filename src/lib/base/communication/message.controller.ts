@@ -1,4 +1,4 @@
-import { Controller } from '@src/domains/gateway/base/controller';
+import { Controller } from '@lib/base/common/controller';
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';

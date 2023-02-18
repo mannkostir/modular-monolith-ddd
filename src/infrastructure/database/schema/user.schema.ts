@@ -17,10 +17,6 @@ export const UserSchema = new EntitySchema<User>({
       type: 'text',
       nullable: false,
     },
-    token: {
-      type: 'text',
-      nullable: false,
-    },
   },
   name: 'User',
 });

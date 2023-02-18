@@ -3,6 +3,7 @@ import { ISaveSaga } from '@lib/interfaces/common/save-saga.interface';
 import { IRetrieveSaga } from '@lib/interfaces/common/retrieve-saga.interface';
 import { ITransactionalOutboxRepository } from '@lib/interfaces/ports/transactional-outbox.repository.interface';
 import { UserRepository } from '@src/domains/identity/persistence/user/user.repository';
+import { UserSchema } from '@src/infrastructure/database/schema/user.schema';
 
 export class UnitOfWork extends TypeormUnitOfWork {
   getSagaRepository(correlationId: string): ISaveSaga & IRetrieveSaga {
@@ -17,7 +18,7 @@ export class UnitOfWork extends TypeormUnitOfWork {
 
   public getUserRepository(correlationId: string): UserRepository {
     return new UserRepository(
-      this.getOrmRepository(correlationId),
+      this.getOrmRepository(UserSchema, correlationId),
       this,
       correlationId,
     );
