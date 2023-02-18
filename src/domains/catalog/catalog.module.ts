@@ -18,6 +18,7 @@ import { RemoveItemFromCatalogCommandHandler } from '@src/domains/catalog/comman
 import { IntegrationModule } from '@src/domains/integration/integration.module';
 import RedisConfig from '@src/config/redis.config';
 import { CatalogOutboxMessageSchema } from '@src/infrastructure/database/schema/catalog.outbox-message.schema';
+import { CqrsModule } from '@nestjs/cqrs';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   AddItemToCatalogCommandHandler,
@@ -77,6 +78,7 @@ const DataSourceProvider: Provider<DataSource> = {
       redisConnection: RedisConfig,
       typeormDataSource: TypeormConfig,
     }),
+    CqrsModule,
   ],
   providers: [
     ...commandHandlers,

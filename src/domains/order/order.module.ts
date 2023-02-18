@@ -22,6 +22,7 @@ import { CreateOrderCommandHandler } from '@src/domains/order/commands/order/cre
 import { CancelOrderCommandHandler } from '@src/domains/order/commands/order/cancel-order/cancel-order.command-handler';
 import { PlaceOrderCommandHandler } from '@src/domains/order/commands/order/place-order/place-order.command-handler';
 import { GetOrderQueryHandler } from '@src/domains/order/queries/order/get-order/get-order.query-handler';
+import { CqrsModule } from '@nestjs/cqrs';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   OrderItemCommandHandler,
@@ -84,6 +85,7 @@ const DataSourceProvider: Provider<DataSource> = {
       redisConnection: RedisConfig,
       typeormDataSource: TypeormConfig,
     }),
+    CqrsModule,
   ],
   providers: [
     ...commandHandlers,

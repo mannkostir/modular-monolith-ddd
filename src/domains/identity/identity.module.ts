@@ -16,6 +16,7 @@ import { IdentityOutboxMessageSchema } from '@src/infrastructure/database/schema
 import { UserSchema } from '@src/infrastructure/database/schema/user.schema';
 import { CreateUserCommandHandler } from '@src/domains/identity/commands/user/create-user/create-user.command-handler';
 import { UnitOfWork } from '@src/domains/identity/persistence/unit-of-work';
+import { CqrsModule } from '@nestjs/cqrs';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   CreateUserCommandHandler,
@@ -74,6 +75,7 @@ const DataSourceProvider: Provider<DataSource> = {
       redisConnection: RedisConfig,
       typeormDataSource: TypeormConfig,
     }),
+    CqrsModule,
   ],
   providers: [
     ...commandHandlers,

@@ -3,9 +3,9 @@ import { IHandleMessage } from '@lib/interfaces/common/handle-message.interface'
 import { IOrderConfirmedMessage } from '@lib/messages/order-confirmed.message.interface';
 import { RequestPaymentMessage } from '@src/domains/order/messages/request-payment.message';
 import { IPaymentFulfilledMessage } from '@lib/messages/payment-fulfilled.message.interface';
-import { GetOrderQuery } from '@src/domains/order/queries/order/get-order/get-order.query';
+import { GetOrderQuery } from '@lib/communication/gateway-interface/order/queries/get-order/get-order.query';
 import { GetOrderModel } from '@src/domains/order/queries/order/get-order/get-order.dao';
-import { PlaceOrderCommand } from '@src/domains/order/commands/order/place-order/place-order.command';
+import { PlaceOrderCommand } from '@lib/communication/gateway-interface/order/commands/place-order/place-order.command';
 
 type SagaData = SagaState;
 

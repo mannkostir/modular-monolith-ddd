@@ -17,6 +17,7 @@ import { PaymentOutboxMessageSchema } from '@src/infrastructure/database/schema/
 import { MakePaymentCommandHandler } from '@src/domains/payment/commands/payment/make-payment/make-payment.command-handler';
 import { UnitOfWork } from '@src/domains/payment/persistence/unit-of-work';
 import { CreatePaymentCommandHandler } from '@src/domains/payment/commands/payment/create-payment/create-payment.command-handler';
+import { CqrsModule } from '@nestjs/cqrs';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   MakePaymentCommandHandler,
@@ -76,6 +77,7 @@ const DataSourceProvider: Provider<DataSource> = {
       redisConnection: RedisConfig,
       typeormDataSource: TypeormConfig,
     }),
+    CqrsModule,
   ],
   providers: [
     ...commandHandlers,
