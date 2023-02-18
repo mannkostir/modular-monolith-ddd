@@ -2,7 +2,6 @@ import { HttpController } from '@lib/base/common/http-controller';
 import { ResponseDecorator } from '@lib/decorators/response.decorator';
 import { GetOrderResponseDto } from '@src/domains/order/queries/order/get-order/get-order.response.dto';
 import { Controller, Get, Query } from '@nestjs/common';
-import { UuidParam } from '@lib/decorators/uuid-param.decorator';
 import { GetOrderRequestDto } from '@src/domains/order/queries/order/get-order/get-order.request.dto';
 import { GetOrderQuery } from '@src/domains/order/queries/order/get-order/get-order.query';
 import { Result } from '@lib/utils/result.util';
@@ -13,17 +12,18 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('order')
 export class GetOrderHttpController extends HttpController {
   @ResponseDecorator(GetOrderResponseDto, 'Get order')
-  @Get(':/id')
-  private async getOrder(
-    @UuidParam('id') id: string,
-    @Query() query: GetOrderRequestDto,
-  ) {
+  @Get('')
+  private async getOrder(@Query() query: GetOrderRequestDto) {
     const result = await this.queryBus.execute<
       GetOrderQuery,
       Result<GetOrderResponseDto, EntityNotFoundDomainError>
     >(
       new GetOrderQuery({
-        params: { invoiceId: query.invoiceId, orderId: id },
+        params: {
+          invoiceId: query.invoiceId,
+          orderId: query.orderId,
+          customerId: query.customerId,
+        },
       }),
     );
 

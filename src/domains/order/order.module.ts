@@ -34,6 +34,7 @@ import { DomainEventMapper } from '@lib/base/domain/domain-event-mapper';
 import { PdfReportAttachedEventMapper } from '@src/domains/order/event-mappers/order-confirmed.domain-event.mapper';
 import { AsyncDomainEventHandler } from '@lib/base/domain/async-domain-event-handler';
 import { RemoveOrderEventHandler } from '@src/domains/order/event-handlers/order-cancelled/remove-order.event-handler';
+import { GetOrderHttpController } from '@src/domains/order/queries/order/get-order/get-order.http-controller';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   OrderItemCommandHandler,
@@ -126,6 +127,7 @@ const DataSourceProvider: Provider<DataSource> = {
     ConfirmOrderHttpController,
     CancelOrderHttpController,
     RemoveOrderHttpController,
+    GetOrderHttpController,
   ],
 })
 export class OrderModule {}
