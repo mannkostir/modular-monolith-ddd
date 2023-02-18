@@ -1,8 +1,8 @@
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
-import { AggregateRoot } from '@lib/base/domain/aggregate-root';
 import { PartialBy } from '@lib/types/partial-by.type';
 import { Result } from '@lib/utils/result.util';
 import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
+import { Entity } from '@lib/base/domain/entity';
 
 export type OrderedItemProps = {
   orderId: UuidVO;
@@ -12,7 +12,7 @@ export type OrderedItemProps = {
 
 export type CreateOrderedItemProps = PartialBy<OrderedItemProps, 'quantity'>;
 
-export class OrderedItemEntity extends AggregateRoot<OrderedItemProps> {
+export class OrderedItemEntity extends Entity<OrderedItemProps> {
   public get orderId(): UuidVO {
     return this.props.orderId;
   }
