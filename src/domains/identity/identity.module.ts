@@ -119,7 +119,7 @@ const DataSourceProvider: Provider<DataSource> = {
         return new JwtAuthStrategy('secret', {
           async getUserById(id: string): Promise<AttachedUser | undefined> {
             const user = await new GetUserDao(dataSource).execute({ id });
-            return user ? { id: user.id } : undefined;
+            return user && user.id ? { id: user.id } : undefined;
           },
         });
       },

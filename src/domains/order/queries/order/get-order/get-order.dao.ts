@@ -32,17 +32,17 @@ export class GetOrderDao extends TypeormDao<GetOrderModel, GetOrderParams> {
     params: GetOrderParams,
   ): ExtendedQueryBuilder<GetOrderModel> {
     qb.select([
-      'order.id as id',
-      'order."invoiceId" as "invoiceId"',
-      'order."orderStatus" as status',
-      'order."customerId" as "customerId"',
-    ]).from('orders', 'order');
+      'o.id as id',
+      'o."invoiceId" as "invoiceId"',
+      'o."orderStatus" as status',
+      'o."customerId" as "customerId"',
+    ]).from('order', 'o');
 
     if (params.invoiceId) {
-      qb.andWhere('order."invoiceId" = :invoiceId', params);
+      qb.andWhere('o."invoiceId" = :invoiceId', params);
     }
     if (params.customerId) {
-      qb.andWhere('order."customerId" = :customerId', params);
+      qb.andWhere('o."customerId" = :customerId', params);
     }
 
     return qb;

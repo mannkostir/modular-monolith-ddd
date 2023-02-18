@@ -1,8 +1,9 @@
-import { IsNumberString } from 'class-validator';
+import { IsInt, IsPositive } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class OrderItemRequestDto {
-  @IsNumberString()
+  @IsInt()
+  @IsPositive()
   @ApiProperty()
   quantity!: number;
 }

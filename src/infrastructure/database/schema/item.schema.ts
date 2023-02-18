@@ -8,4 +8,13 @@ export const ItemSchema = new EntitySchema<Item>({
     price: { type: 'int', nullable: false },
   },
   name: 'Item',
+  relations: {
+    orderedItems: {
+      target: 'OrderedItem',
+      type: 'one-to-many',
+      eager: true,
+      inverseSide: 'order',
+      cascade: true,
+    },
+  },
 });

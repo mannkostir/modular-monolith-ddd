@@ -22,6 +22,7 @@ export class ExceptionInterceptor implements NestInterceptor {
   ): Observable<Exception> {
     return next.handle().pipe(
       catchError((err) => {
+        console.error(err);
         if (err instanceof EntityNotFoundDomainError) {
           throw new NotFoundException(err.message);
         }

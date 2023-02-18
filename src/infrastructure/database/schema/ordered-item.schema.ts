@@ -5,6 +5,8 @@ export const OrderedItemSchema = new EntitySchema<OrderedItem>({
   columns: {
     id: { type: 'uuid', nullable: false, generated: 'uuid', primary: true },
     quantity: { type: 'int', nullable: false, default: 1 },
+    itemId: { type: 'uuid', nullable: false },
+    orderId: { type: 'uuid', nullable: false },
   },
   relations: {
     order: {

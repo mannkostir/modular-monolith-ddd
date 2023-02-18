@@ -23,6 +23,7 @@ import { CancelOrderCommandHandler } from '@src/domains/order/commands/order/can
 import { PlaceOrderCommandHandler } from '@src/domains/order/commands/order/place-order/place-order.command-handler';
 import { GetOrderQueryHandler } from '@src/domains/order/queries/order/get-order/get-order.query-handler';
 import { CqrsModule } from '@nestjs/cqrs';
+import { OrderItemHttpController } from '@src/domains/order/commands/ordered-item/order-item/order-item.http-controller';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
   OrderItemCommandHandler,
@@ -98,5 +99,6 @@ const DataSourceProvider: Provider<DataSource> = {
     AsyncDomainEventsBusProvider,
     DomainEventsAsyncPublisherProvider,
   ],
+  controllers: [OrderItemHttpController],
 })
 export class OrderModule {}

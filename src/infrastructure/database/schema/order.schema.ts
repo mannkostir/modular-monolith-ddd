@@ -19,6 +19,8 @@ export const OrderSchema = new EntitySchema<Order>({
       target: 'OrderedItem',
       type: 'one-to-many',
       eager: true,
+      inverseSide: 'order',
+      cascade: true,
     },
     customer: {
       target: 'User',

@@ -1,11 +1,8 @@
-import { PersistenceException } from '@src/infrastructure/database/errors/persistence.exception';
-import { PersistenceExceptionCode } from '@src/infrastructure/database/errors/persistence.exception-code';
+import { DomainException } from '@lib/base/common/domain.exception';
+import { DomainExceptionCode } from '@lib/types/domain-exception-code.type';
 
-export class EntityNotFoundDomainError extends PersistenceException {
+export class EntityNotFoundDomainError extends DomainException {
   constructor(message?: string) {
-    super(
-      PersistenceExceptionCode.entityNotFound,
-      message || 'Данные не найдены',
-    );
+    super(DomainExceptionCode.notFound, message || 'Данные не найдены');
   }
 }

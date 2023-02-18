@@ -23,8 +23,8 @@ export class GetUserDao extends TypeormDao<GetUserModel, GetUserParams> {
     qb: ExtendedQueryBuilder<GetUserModel>,
     params: GetUserParams,
   ): ExtendedQueryBuilder<GetUserModel> {
-    qb.select(['user.id', 'user.email'])
-      .from('user', 'user')
+    qb.select(['u.id as id', 'u.email as email'])
+      .from('user', 'u')
       .addSpecification(new QueryByEmailSpecification(params));
 
     return qb;
