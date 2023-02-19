@@ -3,10 +3,11 @@ import { PaymentStatus } from '@src/domains/payment/domain/types/payment-status.
 import { PaymentFulfilledDomainEvent } from '@src/domains/payment/domain/events/payment-fulfilled.domain-event';
 import { PaymentRejectedDomainEvent } from '@src/domains/payment/domain/events/payment-rejected.domain-event';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
+import { RubMoneyVO } from '@lib/value-objects/money.value-object';
 
 export type PaymentProps = {
   status: PaymentStatus;
-  amount: number;
+  amount: RubMoneyVO;
 };
 
 export type CreatePaymentProps = Omit<PaymentProps, 'status'> & { id?: UuidVO };

@@ -7,6 +7,7 @@ import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domai
 import { PaymentEntity } from '@src/domains/payment/domain/entities/payment.entity';
 import { EntityMutationResult } from '@lib/interfaces/ports/repository.interface';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
+import { RubMoneyVO } from '@lib/value-objects/money.value-object';
 
 @CqrsCommandHandler(CreatePaymentCommand)
 export class CreatePaymentCommandHandler extends CommandHandler<UnitOfWork> {
@@ -18,7 +19,7 @@ export class CreatePaymentCommandHandler extends CommandHandler<UnitOfWork> {
     );
 
     const payment = PaymentEntity.create({
-      amount: command.payload.amount,
+      amount: new RubMoneyVO(command.payload.amount),
       id: command.payload.paymentId
         ? new UuidVO(command.payload.paymentId)
         : undefined,

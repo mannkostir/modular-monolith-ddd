@@ -3,10 +3,11 @@ import { PartialBy } from '@lib/types/partial-by.type';
 import { Result } from '@lib/utils/result.util';
 import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
 import { Entity } from '@lib/base/domain/entity';
+import { RubMoneyVO } from '@lib/value-objects/money.value-object';
 
 export type OrderedItemProps = {
   orderId: UuidVO;
-  item: { id: UuidVO; price: number };
+  item: { id: UuidVO; price: RubMoneyVO };
   quantity: number;
 };
 
@@ -21,8 +22,8 @@ export class OrderedItemEntity extends Entity<OrderedItemProps> {
     return this.props.item.id;
   }
 
-  public get price(): number {
-    return this.props.item.price * this.props.quantity;
+  public get price(): RubMoneyVO {
+    return this.props.item.price;
   }
 
   public static create(createProps: CreateOrderedItemProps): OrderedItemEntity {

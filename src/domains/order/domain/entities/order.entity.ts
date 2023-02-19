@@ -39,7 +39,7 @@ export class OrderEntity extends AggregateRoot<OrderProps> {
   }
 
   protected get total(): number {
-    return this.props.orderedItems.reduce((total, item) => item.price, 0);
+    return this.props.orderedItems.reduce((total, item) => item.price.value, 0);
   }
 
   public static create(createProps: CreateOrderProps): OrderEntity {

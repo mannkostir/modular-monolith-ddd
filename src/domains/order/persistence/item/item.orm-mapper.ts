@@ -5,6 +5,7 @@ import {
 } from '@src/domains/order/domain/entities/item.entity';
 import { Item } from '@src/infrastructure/database/types/item.type';
 import { OrmEntityProps } from '@src/infrastructure/database/types/orm-entity-props.type';
+import { RubMoneyVO } from '@lib/value-objects/money.value-object';
 
 export class ItemOrmMapper extends OrmMapper<ItemEntity, ItemProps, Item> {
   protected getEntityConstructor(ormEntity: Item): {
@@ -15,7 +16,7 @@ export class ItemOrmMapper extends OrmMapper<ItemEntity, ItemProps, Item> {
 
   protected async toDomainProps(ormEntity: Item): Promise<ItemProps> {
     return {
-      price: ormEntity.price,
+      price: new RubMoneyVO(ormEntity.price),
     };
   }
 

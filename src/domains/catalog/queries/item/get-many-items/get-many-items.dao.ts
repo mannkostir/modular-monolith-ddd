@@ -14,7 +14,7 @@ export interface GetManyItemsParams extends DaoParams, PaginationQuery {
 export type GetManyItemsModel = {
   name: string;
 
-  price: string;
+  price: number;
 
   id: string;
 };
