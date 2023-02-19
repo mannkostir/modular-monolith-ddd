@@ -7,6 +7,7 @@ import { OrderedItem } from '@src/infrastructure/database/types/ordered-item.typ
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
 import { OrmEntityProps } from '@src/infrastructure/database/types/orm-entity-props.type';
 import { DataSource } from 'typeorm';
+import { RubMoneyVO } from '@lib/value-objects/money.value-object';
 
 export class OrderedItemOrmMapper extends OrmMapper<
   OrderedItemEntity,
@@ -31,10 +32,15 @@ export class OrderedItemOrmMapper extends OrmMapper<
       .select('i.price as price')
       .from('item', 'i')
       .where('i.id = :id', { id: ormEntity.itemId })
-      .getRawOne();
+      .getRawOne<{ price: number }>();
+
+    if (!item) throw new Error('Item does not found');
 
     return {
-      item: { id: new UuidVO(ormEntity.itemId), price: item.price },
+      item: {
+        id: new UuidVO(ormEntity.itemId),
+        price: new RubMoneyVO(item.price),
+      },
       orderId: new UuidVO(ormEntity.orderId),
       quantity: ormEntity.quantity,
     };
