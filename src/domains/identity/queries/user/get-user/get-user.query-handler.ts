@@ -16,6 +16,6 @@ export class GetUserQueryHandler extends QueryHandler {
         new EntityNotFoundDomainError('Пользователь не найден'),
       );
 
-    return getUserModel;
+    return Result.ok(getUserModel);
   }
 }

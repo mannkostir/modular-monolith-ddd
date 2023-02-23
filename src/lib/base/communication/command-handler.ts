@@ -1,7 +1,7 @@
 import { ICommandHandler } from '@nestjs/cqrs';
 import { IUnitOfWork } from '@lib/interfaces/ports/unit-of-work.interface';
 import { Command } from './command';
-import { Injectable, Type } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DomainEventsPublisher } from '@lib/base/domain/domain-events.publisher';
 import { DomainEventsAsyncPublisher } from '@lib/base/domain/domain-events.async.publisher';
 import { ModuleRef } from '@nestjs/core';
@@ -10,6 +10,7 @@ import { ProviderTokens } from '@lib/types/provider-tokens.type';
 import { Result } from '@lib/utils/result.util';
 import { Exception } from '@lib/base/common/exception';
 import { DomainException } from '@lib/base/common/domain.exception';
+import { ProvidersPool } from '@lib/base/communication/providers-pool';
 
 @Injectable()
 export abstract class CommandHandler<
@@ -18,24 +19,30 @@ export abstract class CommandHandler<
   TExceptionType extends Exception = DomainException,
 > implements ICommandHandler
 {
-  private providerTokenToPropertyNameMap = new Map<string | Type, symbol>();
+  private readonly providersPool: ProvidersPool;
 
-  public constructor(protected readonly moduleRef: ModuleRef) {}
+  public constructor(protected readonly moduleRef: ModuleRef) {
+    this.providersPool = new ProvidersPool(moduleRef);
+  }
 
   protected get domainEventsPublisher(): DomainEventsPublisher {
-    return this.getProvider(ProviderTokens.domainEventsPublisher);
+    return this.providersPool.getProvider(ProviderTokens.domainEventsPublisher);
   }
 
   protected get asyncDomainEventsPublisher(): DomainEventsAsyncPublisher {
-    return this.getProvider(ProviderTokens.asyncDomainEventsPublisher);
+    return this.providersPool.getProvider(
+      ProviderTokens.asyncDomainEventsPublisher,
+    );
   }
 
   protected get configServer(): ConfigService {
-    return this.getProvider(ConfigService);
+    return this.providersPool.getProvider(ConfigService);
   }
 
   protected get unitOfWork(): UnitOfWork {
-    return this.getProvider<UnitOfWork>(ProviderTokens.unitOfWork);
+    return this.providersPool.getProvider<UnitOfWork>(
+      ProviderTokens.unitOfWork,
+    );
   }
 
   public execute(
@@ -82,20 +89,4 @@ export abstract class CommandHandler<
   protected abstract handle(
     command: Command,
   ): Promise<Result<TReturnType, TExceptionType>>;
-
-  private getProvider<ProviderType>(token: string | Type): ProviderType {
-    let fieldName: symbol;
-    if (this.providerTokenToPropertyNameMap.has(token)) {
-      fieldName = this.providerTokenToPropertyNameMap.get(token) as symbol;
-    } else {
-      fieldName = Symbol();
-      this.providerTokenToPropertyNameMap.set(token, fieldName);
-    }
-
-    if (!this[fieldName]) {
-      this[fieldName] = this.moduleRef.get(token);
-      if (!this[fieldName]) throw new Error('Unit Of Work not provided');
-    }
-    return this[fieldName];
-  }
 }
