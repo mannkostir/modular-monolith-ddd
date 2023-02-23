@@ -1,4 +1,3 @@
-import { CommandHandler as CqrsCommandHandler } from '@nestjs/cqrs';
 import { UnitOfWork } from '@src/domains/catalog/persistence/unit-of-work';
 import { CommandHandler } from '@lib/base/communication/command-handler';
 import { AddItemToCatalogCommand } from './add-item-to-catalog.command';
@@ -6,9 +5,12 @@ import { Result } from '@lib/utils/result.util';
 import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
 import { ItemEntity } from '@src/domains/catalog/domain/entities/item.entity';
 
-@CqrsCommandHandler(AddItemToCatalogCommand)
-export class AddItemToCatalogCommandHandler extends CommandHandler<UnitOfWork> {
-  async handle(
+export class AddItemToCatalogCommandHandler extends CommandHandler<
+  UnitOfWork,
+  void,
+  InvalidOperationDomainError
+> {
+  protected async handle(
     command: AddItemToCatalogCommand,
   ): Promise<Result<void, InvalidOperationDomainError>> {
     const itemRepository = this.unitOfWork.getItemsRepository(

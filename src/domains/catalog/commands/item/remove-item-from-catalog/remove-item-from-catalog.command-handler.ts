@@ -4,15 +4,15 @@ import { CommandHandler } from '@lib/base/communication/command-handler';
 import { RemoveItemFromCatalogCommand } from './remove-item-from-catalog.command';
 import { Result } from '@lib/utils/result.util';
 import { EntityNotFoundDomainError } from '@src/infrastructure/database/errors/entity-not-found.persistence.exception';
-import { Exception } from '@lib/base/common/exception';
 import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
+import { DomainException } from '@lib/base/common/domain.exception';
 
 @CqrsCommandHandler(RemoveItemFromCatalogCommand)
 export class RemoveItemFromCatalogCommandHandler extends CommandHandler<UnitOfWork> {
   async handle(
     command: RemoveItemFromCatalogCommand,
-  ): Promise<Result<void, Exception>> {
+  ): Promise<Result<void, DomainException>> {
     const itemRepository = this.unitOfWork.getItemsRepository(
       command.correlationId,
     );

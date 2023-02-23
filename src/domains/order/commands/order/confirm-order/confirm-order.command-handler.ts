@@ -5,12 +5,14 @@ import { ConfirmOrderCommand } from '@src/domains/order/commands/order/confirm-o
 import { Result } from '@lib/utils/result.util';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
 import { EntityNotFoundDomainError } from '@src/infrastructure/database/errors/entity-not-found.persistence.exception';
-import { Exception } from '@lib/base/common/exception';
 import { OrderSaveFailedDomainException } from '@src/domains/order/domain/errors/order-save-failed.domain-exception';
+import { DomainException } from '@lib/base/common/domain.exception';
 
 @CqrsCommandHandler(ConfirmOrderCommand)
 export class ConfirmOrderCommandHandler extends CommandHandler<UnitOfWork> {
-  async handle(command: ConfirmOrderCommand): Promise<Result<void, Exception>> {
+  async handle(
+    command: ConfirmOrderCommand,
+  ): Promise<Result<void, DomainException>> {
     const orderRepository = this.unitOfWork.getOrderRepository(
       command.correlationId,
     );

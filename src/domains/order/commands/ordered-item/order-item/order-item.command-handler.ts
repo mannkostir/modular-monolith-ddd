@@ -5,12 +5,14 @@ import { OrderItemCommand } from '@src/domains/order/commands/ordered-item/order
 import { Result } from '@lib/utils/result.util';
 import { InvalidOperationDomainError } from '@lib/errors/invalid-operation.domain.error';
 import { UuidVO } from '@lib/value-objects/uuid.value-object';
-import { Exception } from '@lib/base/common/exception';
 import { EntityNotFoundDomainError } from '@src/infrastructure/database/errors/entity-not-found.persistence.exception';
+import { DomainException } from '@lib/base/common/domain.exception';
 
 @CqrsCommandHandler(OrderItemCommand)
 export class OrderItemCommandHandler extends CommandHandler<UnitOfWork> {
-  async handle(command: OrderItemCommand): Promise<Result<void, Exception>> {
+  async handle(
+    command: OrderItemCommand,
+  ): Promise<Result<void, DomainException>> {
     const orderRepository = this.unitOfWork.getOrderRepository(
       command.correlationId,
     );

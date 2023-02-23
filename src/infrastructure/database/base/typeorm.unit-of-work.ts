@@ -54,11 +54,14 @@ export abstract class TypeormUnitOfWork implements IUnitOfWork {
     return this.getQueryRunner(correlationId).manager;
   }
 
-  public async execute(
+  public async execute<
+    TReturnType = any,
+    TExceptionType extends Exception = Exception,
+  >(
     correlationId: string,
     callback: () => Promise<Result<unknown, Exception>>,
     options?: { isolationLevel: IsolationLevel },
-  ): Promise<Result<unknown, Exception>> {
+  ): Promise<Result<TReturnType, TExceptionType>> {
     const queryRunner = this.dataSource.createQueryRunner();
     this.queryRunners.set(correlationId, queryRunner);
     await queryRunner.startTransaction(options?.isolationLevel);
@@ -74,7 +77,7 @@ export abstract class TypeormUnitOfWork implements IUnitOfWork {
         await this.finish(correlationId);
       }
 
-      return result;
+      return result as Result<TReturnType, TExceptionType>;
     } catch (err) {
       await this.rollback(correlationId);
       await this.finish(correlationId);

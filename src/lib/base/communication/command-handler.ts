@@ -1,7 +1,7 @@
 import { ICommandHandler } from '@nestjs/cqrs';
-import { IUnitOfWork } from '../../interfaces/ports/unit-of-work.interface';
+import { IUnitOfWork } from '@lib/interfaces/ports/unit-of-work.interface';
 import { Command } from './command';
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, Type } from '@nestjs/common';
 import { DomainEventsPublisher } from '@lib/base/domain/domain-events.publisher';
 import { DomainEventsAsyncPublisher } from '@lib/base/domain/domain-events.async.publisher';
 import { ModuleRef } from '@nestjs/core';
@@ -9,61 +9,40 @@ import { ConfigService } from '@nestjs/config';
 import { ProviderTokens } from '@lib/types/provider-tokens.type';
 import { Result } from '@lib/utils/result.util';
 import { Exception } from '@lib/base/common/exception';
+import { DomainException } from '@lib/base/common/domain.exception';
 
 @Injectable()
 export abstract class CommandHandler<
   UnitOfWork extends IUnitOfWork,
-  ReturnType = unknown,
-> implements ICommandHandler, OnModuleInit
+  TReturnType = any,
+  TExceptionType extends Exception = DomainException,
+> implements ICommandHandler
 {
-  private _configService: ConfigService | undefined;
+  private providerTokenToPropertyNameMap = new Map<string | Type, symbol>();
 
   public constructor(protected readonly moduleRef: ModuleRef) {}
 
-  private _domainEventsPublisher: DomainEventsPublisher | undefined;
-
   protected get domainEventsPublisher(): DomainEventsPublisher {
-    if (!this._domainEventsPublisher)
-      throw new Error('Domain Events Publisher not provided');
-    return this._domainEventsPublisher;
+    return this.getProvider(ProviderTokens.domainEventsPublisher);
   }
 
-  private _asyncDomainEventsPublisher: DomainEventsAsyncPublisher | undefined;
-
   protected get asyncDomainEventsPublisher(): DomainEventsAsyncPublisher {
-    if (!this._asyncDomainEventsPublisher)
-      throw new Error('Domain Events Async Publisher not provided');
-    return this._asyncDomainEventsPublisher;
+    return this.getProvider(ProviderTokens.asyncDomainEventsPublisher);
   }
 
   protected get configServer(): ConfigService {
-    if (!this._configService) throw new Error('Config Service not provided');
-    return this._configService;
+    return this.getProvider(ConfigService);
   }
-
-  private _unitOfWork: UnitOfWork | undefined;
 
   protected get unitOfWork(): UnitOfWork {
-    if (!this._unitOfWork) throw new Error('Unit Of Work not provided');
-    return this._unitOfWork;
+    return this.getProvider<UnitOfWork>(ProviderTokens.unitOfWork);
   }
 
-  onModuleInit() {
-    this._unitOfWork = this.moduleRef.get(ProviderTokens.unitOfWork);
-    this._domainEventsPublisher = this.moduleRef.get(
-      ProviderTokens.domainEventsPublisher,
-    );
-    this._asyncDomainEventsPublisher = this.moduleRef.get(
-      ProviderTokens.asyncDomainEventsPublisher,
-    );
-    this._configService = this.moduleRef.get(ConfigService);
-  }
-
-  abstract handle(command: Command): Promise<Result<ReturnType, Exception>>;
-
-  public execute(command: Command): Promise<Result<unknown, Exception>> {
+  public execute(
+    command: Command,
+  ): Promise<Result<TReturnType, TExceptionType>> {
     return this.unitOfWork.execute(command.correlationId, async () => {
-      const result: Result<ReturnType, Exception> = await this.handle(command);
+      const result: Result<TReturnType, Exception> = await this.handle(command);
       if (result.isErr) return result;
 
       const correlationAggregates =
@@ -75,11 +54,10 @@ export abstract class CommandHandler<
           .map(async (aggregate) => {
             aggregate.isDomainProcessed = true;
             if (!aggregate.domainEvents.length) return Result.ok();
-            const publishResult = await this.domainEventsPublisher.publishBulk(
+            return await this.domainEventsPublisher.publishBulk(
               aggregate.domainEvents,
               command.correlationId,
             );
-            return publishResult;
           }),
       );
 
@@ -99,5 +77,25 @@ export abstract class CommandHandler<
 
       return result;
     });
+  }
+
+  protected abstract handle(
+    command: Command,
+  ): Promise<Result<TReturnType, TExceptionType>>;
+
+  private getProvider<ProviderType>(token: string | Type): ProviderType {
+    let fieldName: symbol;
+    if (this.providerTokenToPropertyNameMap.has(token)) {
+      fieldName = this.providerTokenToPropertyNameMap.get(token) as symbol;
+    } else {
+      fieldName = Symbol();
+      this.providerTokenToPropertyNameMap.set(token, fieldName);
+    }
+
+    if (!this[fieldName]) {
+      this[fieldName] = this.moduleRef.get(token);
+      if (!this[fieldName]) throw new Error('Unit Of Work not provided');
+    }
+    return this[fieldName];
   }
 }

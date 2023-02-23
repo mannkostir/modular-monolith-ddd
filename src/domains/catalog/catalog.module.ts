@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ItemSchema } from '@src/infrastructure/database/schema/item.schema';
 import { CommandHandler } from '@lib/base/communication/command-handler';
 import { UnitOfWork } from '@src/domains/catalog/persistence/unit-of-work';
-import { AddItemToCatalogCommandHandler } from '@src/domains/catalog/commands/item/add-item-to-catalog/add-item-to-catalog.command-handler';
 import { QueryHandler } from '@lib/base/communication/query-handler';
 import { ProviderTokens } from '@lib/types/provider-tokens.type';
 import { DomainEventsPublisher } from '@lib/base/domain/domain-events.publisher';
@@ -23,7 +22,6 @@ import { AddItemToCatalogHttpController } from '@src/domains/catalog/commands/it
 import { GetManyItemsHttpController } from '@src/domains/catalog/queries/item/get-many-items/get-many-items.http-controller';
 
 const commandHandlers: Type<CommandHandler<UnitOfWork>>[] = [
-  AddItemToCatalogCommandHandler,
   RemoveItemFromCatalogCommandHandler,
 ];
 
